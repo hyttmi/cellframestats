@@ -16,6 +16,7 @@ body, html {
     padding-right: 20px;
     height: 60px;
     background-color: #119eaa;
+    text-transform: uppercase;
 }
 
 .nav-link {
@@ -46,9 +47,12 @@ body, html {
 
 .row-stats-heading {    
     padding-bottom: 8px;
+    padding-left: 30px;
     background-color: #1bb6c4;
-    color: #131313;
     margin-top: 20px;
+    color: #131313;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .stats {
