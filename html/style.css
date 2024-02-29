@@ -4,8 +4,6 @@ body, html {
     background-image: url("img/bg.jpg");
     background-size: cover;
     height: 100%;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
 }
 
 .container-fluid {
@@ -23,18 +21,17 @@ body, html {
 .nav-link {
     color: #131313;
     background-color: #119eaa;
+    height: 60px;
+    padding-top: 18px;
 }
 
 .nav-link:hover {
     color:#131313;
+    background-color: #1bb6c4;
 }
 
 .nav-item {
     margin-left: 10px;
-}
-
-.nav-item:hover {
-    background-color: #cccccc;
 }
 
 .main-content {
@@ -49,13 +46,13 @@ body, html {
 
 .row-stats-heading {    
     padding-bottom: 8px;
-    background-color: #119eaa;
+    background-color: #1bb6c4;
     color: #131313;
     margin-top: 20px;
 }
 
 .stats {
-    color: #119eaa;
+    color: #1bb6c4;
     font-weight: bold;
 }
 
@@ -66,28 +63,23 @@ body, html {
 footer {
     padding: 0;
     margin: 0;
-    margin-top: 30px;
     padding-bottom: 10px;
     padding-top: 10px;
     background-color: #131313;
-    color: #119eaa;
+    color: #1bb6c4;
 }
 
 .navbar-nav .nav-link:focus {
     color: #131313;
 }
 
-.nav-link:hover {
-    background-color: #19acb9;
-}
-
 footer a {
-    color: #119eaa;
+    color: #1bb6c4;
     text-decoration: none;
 }
 
 .footer-heading {
-    border-bottom: 5px dotted #119eaa;
+    border-bottom: 5px dotted #1bb6c4;
     padding: 6px;
 }
 
