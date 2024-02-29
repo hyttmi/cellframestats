@@ -15,7 +15,7 @@ def old_line():
     return 24886
 
 
-
+### TESTI ###
 
 def find_block_date(command):  # check inside signed block to find out which pkey was the 1st signer and at what date
     list_items = len(command)
