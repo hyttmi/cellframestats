@@ -1,4 +1,3 @@
-
 import subprocess
 import sqlite3
 import operator
@@ -8,6 +7,10 @@ import re
 import json
 from requests.auth import HTTPBasicAuth
 import requests_unixsocket
+
+def old_line():
+    return 0
+
 
 
 def add_information(message,extra_info):
@@ -543,7 +546,7 @@ def main_hashing2():
 
 
 
-def nodes():
+def recalculate_all_time_blocks_and_signatures():
       con = sqlite3.connect('cellframe.db')
       cur = con.cursor()
       query = """ SELECT id FROM {table} ORDER BY id DESC LIMIT 1""".format(table="all_node_names")
@@ -563,12 +566,12 @@ def nodes():
          cur.execute(query)
          riveja, = cur.fetchone()
 
-         query = """ UPDATE {table} SET all_time_blocks=0, all_time_signatures=0""".format(table=node_name)
+         query = """ UPDATE {table} SET all_time_blocks=0, all_time_signatures=0""".format(table=node_name) #RESET EVERY nodes all time blocks / signatures
          cur.execute(query)
          con.commit()
 
 
-         
+
          query = """ SELECT blocks, daily_signatures FROM {table} WHERE id=1""".format(table=node_name)
          cur.execute(query)
          blocks, daily_signatures, = cur.fetchone()
@@ -579,7 +582,7 @@ def nodes():
          con.commit()
 
 
- 
+
          for i in range(1, riveja):
              query = """ SELECT blocks, all_time_blocks, daily_signatures, all_time_signatures FROM {table} WHERE id=?""".format(table=node_name)
              cur.execute(query,[i])
@@ -593,6 +596,31 @@ def nodes():
              cur.execute(query,[new_all_time_blocks,new_all_time_signatures,i+1])
              con.commit()
 
+
+
+def zero_all_blocks_and_signatures():
+      con = sqlite3.connect('cellframe.db')
+      cur = con.cursor()
+      query = """ SELECT id FROM {table} ORDER BY id DESC LIMIT 1""".format(table="all_node_names")
+      cur.execute(query)
+      row_id, = cur.fetchone()
+      print("rows to go", row_id)
+
+      for x in range(1, row_id + 1):
+         print(x)
+         query = """ SELECT node_name FROM all_node_names WHERE id=?""".format()
+         cur.execute(query,[x])
+         node_name, = cur.fetchone()
+         #address=parse_node_address(address)
+         print(node_name)
+
+         query = """SELECT id FROM {table} ORDER BY id DESC LIMIT 1""".format(table=node_name)
+         cur.execute(query)
+         id, = cur.fetchone()
+
+         query = """UPDATE {table} SET all_time_blocks=0, all_time_signatures=0,blocks=0,daily_signatures=0""".format(table=node_name) #ZERO EVERYTHING
+         cur.execute(query)
+         con.commit()
 
 
 
@@ -2148,7 +2176,5 @@ def initial_checkup():
     print("Initial testing with block hash 1 ok")
     file.close()
     return(1)
-
-
 
 
