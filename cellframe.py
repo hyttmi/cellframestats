@@ -3,15 +3,21 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
+import node_utils as nu
+
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-def return_42():
-    return 42
-
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
-    value = return_42()
-    return templates.TemplateResponse("index.html", {"request": request, "value": value})
+    masternodes = nu.fetch_active_nodes()
+    total_blocks = nu.fetch_blocks_on_main()
+    wallets = nu.fetch_all_activated_wallets()
+    return templates.TemplateResponse("index.html", {"request": request, "active_nodes": masternodes, "main_blocks": total_blocks, "active_wallets": wallets})
+
+@app.get("/stats", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("stats.html", {"request": request})
+

@@ -26,6 +26,11 @@ body, html {
     padding-top: 18px;
 }
 
+.navbar-nav .nav-link.active, .navbar-nav .nav-link.show {
+    color: #131313;
+    background-color: #1bb6c4;
+}
+
 .nav-link:hover {
     color:#131313;
     background-color: #1bb6c4;
@@ -48,7 +53,7 @@ body, html {
 .row-stats-heading {    
     padding-bottom: 8px;
     padding-left: 30px;
-    background-color: #1bb6c4;
+    background-color: #119eaa;
     margin-top: 20px;
     color: #131313;
     border-top-right-radius: 40px;

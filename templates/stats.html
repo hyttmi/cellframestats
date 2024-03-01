@@ -39,10 +39,10 @@
             <div class="collapse navbar-collapse text-center" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item active">
-                        <a class="nav-link active" href="/">Home</a>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/stats">Stats</a>
+                        <a class="nav-link active" href="/stats">Stats</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Zerochain</a>
@@ -68,11 +68,11 @@
         </div>
         <div class="row flex-grow-1 row-stats text-uppercase font-weight-bold">
             <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="{{ active_wallets }}" class="counter card-heading">0</h1>
+                <h1 data-real-value="984" class="counter card-heading">0</h1>
                 <h5><strong>Total unique wallets</strong></h5>
             </div>
             <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="{{ main_blocks }}" class="counter card-heading">0</h1>
+                <h1 data-real-value="28861" class="counter card-heading">0</h1>
                 <h5><strong>Total blocks on main chain</strong></h5>
             </div>
             <div class="col-sm-4 text-center stats">
@@ -82,7 +82,7 @@
         </div>
         <div class="row flex-grow-1 row-stats text-uppercase font-weight-bold">
             <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="{{ active_nodes }}" class="counter card-heading">0</h1>
+                <h1 data-real-value="{{ value }}" class="counter card-heading">0</h1>
                 <h5><strong>masternodes</strong></h5>
             </div>
             <div class="col-sm-4 text-center stats">
