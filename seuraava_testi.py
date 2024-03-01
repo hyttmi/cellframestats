@@ -1,5 +1,4 @@
 
-#import requests_unixsocket
 from functions import *
 import subprocess
 import sqlite3
@@ -12,7 +11,7 @@ from requests.auth import HTTPBasicAuth
 import requests_unixsocket
 
 def old_line():
-    return 24886
+    return 0
 
 
 
@@ -957,7 +956,7 @@ def add_block_sign(pkey,ts_created,signer_number):
                       cur.execute(query, [daily_signatures, ts_created])
                       con.commit()
                       print("added normal signature...")
-                      con.close()
+#                      con.close()
                       return
                   else: # this was 1st block signature
                           query = """ SELECT blocks,daily_signatures FROM {table} WHERE date=?""".format(table=address)
@@ -978,12 +977,12 @@ def add_block_sign(pkey,ts_created,signer_number):
                           print("added 1st block signature...")
 
                   print("UPDATED SIGNATURES for ",address)
-                  con.close()
+#                  con.close()
                   return
 
               else:
                   print("No, this one is a TOTAL mystery signer : ",pkey)
-                  con.close()
+#                  con.close()
 
 
      return
@@ -1354,6 +1353,135 @@ def steal_node_info(nodeaddress):
 
 
 
+def re_read_signatures(block_hash): #check inside signed block to find out which pkey was the 1st signer and at what date
+
+      command = fire_and_split_command("cellframe-node-cli block -net Backbone -chain main dump ", block_hash, True)    #spits out contents of a block
+      list_items=len(command)
+
+      for x in range(list_items): #read every item in the block
+
+
+        if "ts_created:" in command[x]:  ## check through every list item to locate transaction created date
+            length = len(command[x])
+            ts_created = operator.getitem(command[x], slice(length - 26, length - 6))  # if found, copy last 24 letters
+            print(command[x])
+            ts_created = parse_date(ts_created)
+#            print("ts_created",ts_created)
+#            input("")
+#            break #we only want the 1st one
+
+        varmistus = command[x]
+        varmistus = varmistus[-8:19] #need this as one blcok type had signatures instead of Signatures
+
+        if "signatures:" in command[x] and varmistus == "count": #SEE how many signers there was
+             length = len(command[x])
+             signatures = operator.getitem(command[x], slice(length-2,length))
+             signatures.strip()
+             signatures = int(signatures)
+             skip_line=1
+             rows=0
+ #            print("we have",signatures," signatures")
+ #            input("")
+             for rows in range(signatures):
+
+                     length = len(command[x+rows+skip_line]) #get every signers pkey hash
+                     pkey_hash = operator.getitem(command[x+rows+skip_line], slice(length-67, length-1)) #...and copy the last 65 letter
+#                     print(rows,"pkey_hash:",pkey_hash,":...Go add_block_sign(pkey_hash,ts_created")
+                     skip_line += 1
+                     if rows == 0:
+                          print("Block date",ts_created)
+                          add_block_sign(pkey_hash,ts_created,1) #add 1st block signature to pkey_hash owner node
+                     else:
+
+                          add_block_sign(pkey_hash, ts_created,0)  #add the rest of the signatures to pkey_hash owner node
+
+      return
+
+
+
+
+
+
+def go_through_every_block():
+        database = r"cellframe.db"
+
+        # create a database connection
+        con = create_connection(database)
+
+#        global daily_tx_counter
+#        daily_tx_counter=0
+
+        input("Ready to speed run though every block?...")
+        file = open("all_blocks.txt","r")
+
+        with open(r"all_blocks.txt", 'r') as fp: ##count lines in our file
+           for count, line in enumerate(fp):
+               pass
+               count += 1
+
+        print("Blocks to read",count)
+
+
+        old_hash_line = old_line()
+        lines_to_go = count-old_hash_line
+        if lines_to_go < 2:
+            return
+
+        print("But we are going to read ",lines_to_go,"blocks")
+        input("Launch?")
+
+        if old_hash_line != 0:
+            for y in range(old_hash_line):
+              temp = file.readline() #lets read lines until we reach position where last time we ended
+
+        for x in range(count):
+          block_hash = file.readline()
+          block_hash = block_hash[1:67]
+
+          result = re.match("^[A-Za-z0-9]{66}$", block_hash) #check if we have real hash
+          if result == None:
+              print("All hashing done!")
+              file.close()
+              return 0
+
+          print("Current blockx = ",x," / ",count)
+          print("Now using:",block_hash," with length of:",len(block_hash))
+          if len(block_hash) != 66: #if our hash is somethign other than hash --> exit
+             print("All hashing done!")
+             return 0
+
+          re_read_signatures(block_hash)
+        input("safe to quit")
+        file.close()
+        return 1
+
+
+
+def show_our_blocks():
+#
+# Calculates all time blocks (1st signatures)
+# Verify with  cellframe-node-cli block list -net Backbone -chain main -cert <certificate name>
+#
+      con = sqlite3.connect('cellframe.db')
+      cur = con.cursor()
+
+      query = """ SELECT SUM(blocks) FROM (SELECT blocks FROM {table})""".format(table="N5C72D63B6AE5618E")
+      cur.execute(query)
+      vastaus1, = cur.fetchone()
+      print("Timos blocks counted",vastaus1)
+
+      query = """ SELECT SUM(blocks) FROM (SELECT blocks FROM {table})""".format(table="N223ED4C1A3AC1172")
+      cur.execute(query)
+      vastaus1, = cur.fetchone()
+      print("Mikas blocks counted",vastaus1)
+      return
+
+
+
+
+
+
+
 
 
 
@@ -1371,12 +1499,8 @@ def main_hashing():
         global daily_tx_counter
         daily_tx_counter=0
 
-
         input("Ready to launch?...")
-
         file = open("all_blocks.txt","r")
-        ## DO THIS FIRST
-        ##  cellframe-node-cli block list -net Backbone -chain main >> all_blocks.txt
 
         with open(r"all_blocks.txt", 'r') as fp: ##count lines in our file
            for count, line in enumerate(fp):
@@ -1406,14 +1530,19 @@ def main_hashing():
         if old_hash_line != 0:
             for y in range(old_hash_line):
               temp = file.readline() #lets read lines until we reach position where last time we ended
-        #      print("temp :",temp)
 
 
         for x in range(count):
           block_hash = file.readline()
           block_hash = block_hash[1:67]
+
+          result = re.match("^[A-Za-z0-9]{66}$", block_hash) #check if we have real hash
+          if result == None:
+              print("All hashing done!")
+              file.close()
+              return 0
+
           print("x = ",x," Total hash lines = ",count)
- ##         block_hash="0x281748C14060FFFC89D03ED2B1EDBBA2E06E2E87DB3A918E599EBD2BA45607FA"
           print("Now using:",block_hash," with length of:",len(block_hash))
           input("stop and confirm the block hash")
           if len(block_hash) != 66: #if our hash is somethign other than hash --> exit
@@ -1421,9 +1550,7 @@ def main_hashing():
              return 0
 
           ts_created = check_delegations(block_hash)
- #         print("we came back from check_delegations")
           increase_daily_transactions()
-#          input("stop")
           add_last_hash(block_hash)
           increase_hash_line_counter()
           input("SAFE TO QUIT")
@@ -1433,6 +1560,13 @@ def main_hashing():
         return 1
 
 
+##### TO RESET BLOCKS / SIGNATURES ####
+#old_line()                          # get starting point from the top this file
+#zero_all_blocks_and_signatures()    # zeroes blocks and signatures for every possible node
+#go_through_every_block()            # reads through every block to get signatures
+show_our_blocks()                   # calculate our blocks from database for confirmation
+#######################################
+input("stop")
 
 
 
@@ -1441,7 +1575,6 @@ initial_checkup()
 check_online_status() #see if we are good to go
 check_missing_node()
 main_hashing()
-
 update_non_validators_list()
 update_ip_locations()
 update_node_active_statuses_and_data()
@@ -1449,6 +1582,7 @@ check_block_reward()
 check_if_fresh_was_non_validator()
 update_node_versions() #versions and AUTO_UPDATE status
 update_wallet_database()
+
 
 
 
