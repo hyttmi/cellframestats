@@ -1,0 +1,93 @@
+
+body, html {
+    font-family: "Blinker", sans-serif;
+    background-image: url("img/bg.jpg");
+    background-size: cover;
+    height: 100%;
+}
+
+.container-fluid {
+    padding: 0;
+}
+
+.navbar {
+    margin-top: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 60px;
+    background-color: #119eaa;
+    text-transform: uppercase;
+}
+
+.nav-link {
+    color: #131313;
+    background-color: #119eaa;
+    height: 60px;
+    padding-top: 18px;
+}
+
+.nav-link:hover {
+    color:#131313;
+    background-color: #1bb6c4;
+}
+
+.nav-item {
+    margin-left: 10px;
+}
+
+.main-content {
+    margin-top: 30px;
+    background-color: #131313;
+    min-height: 100%;
+}
+
+.row-stats {
+    padding-top: 15px;
+}
+
+.row-stats-heading {    
+    padding-bottom: 8px;
+    padding-left: 30px;
+    background-color: #1bb6c4;
+    margin-top: 20px;
+    color: #131313;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 10px;
+}
+
+.stats {
+    color: #1bb6c4;
+    font-weight: bold;
+}
+
+.info {
+    padding: 20px;
+}
+
+footer {
+    padding: 0;
+    margin: 0;
+    margin-top: 50px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-color: #131313;
+    color: #1bb6c4;
+}
+
+.navbar-nav .nav-link:focus {
+    color: #131313;
+}
+
+footer a {
+    color: #1bb6c4;
+    text-decoration: none;
+}
+
+.footer-heading {
+    border-bottom: 5px dotted #1bb6c4;
+    padding: 6px;
+}
+
+.footer-link-text {
+    padding-left: 6px;
+}
