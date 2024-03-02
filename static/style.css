@@ -3,11 +3,10 @@ body, html {
     font-family: "Poppins", sans-serif;
     background-image: url("img/bg.jpg");
     background-size: cover;
-    height: 100%;
 }
 
 .logo {
-    max-width: 400px;
+    max-width: 500px;
     padding-top: 20px;
     padding-bottom: 20px;
 }
@@ -16,53 +15,70 @@ body, html {
     padding: 0;
 }
 
+.counter {
+    font-weight: bold;
+}
+
 .navbar {
     padding-left: 20px;
     padding-right: 20px;
     height: 60px;
-    background-color: #119eaa;
+    background-color: #1bb6c4;
     text-transform: uppercase;
 }
 
 .nav-link {
     color: #131313;
-    background-color: #119eaa;
+    background-color: #1bb6c4;
     height: 60px;
     padding-top: 18px;
 }
 
 .navbar-nav .nav-link.active, .navbar-nav .nav-link.show {
     color: #131313;
-    background-color: #1bb6c4;
+    background-color: #119eaa;
 }
 
 .nav-link:hover {
     color:#131313;
-    background-color: #1bb6c4;
+    background-color: #119eaa;
 }
 
 .nav-item {
     margin-left: 10px;
 }
 
+.navbar {
+    --bs-navbar-toggler-border-color: none;
+    --bs-navbar-toggler-border: none;
+    --bs-navbar-toggler-border-radius: 0;
+    --bs-navbar-toggler-focus-width: 0;
+    --bs-navbar-toggler-transition: none;
+    --bs-navbar-toggler-border-color: rgba(0, 0, 0, 0.1);
+  }
+  .navbar-dark {
+    --bs-navbar-toggler-border-color: none;
+  }
+  
 .main-content {
     margin-top: 30px;
     background-color: #131313;
-    min-height: 100%;
-}
-
-.row-stats {
-    padding-top: 15px;
 }
 
 .row-stats-heading {    
-    margin-top: 20px;
-    color: #119eaa;
+    margin-top: 12px;
+    color: #1bb6c4;
+    font-weight: bold;
+}
+
+.network-stats {
+    background-color: transparent;
 }
 
 .stats {
     color: #1bb6c4;
     font-weight: bold;
+    padding-top: 20px;
 }
 
 .info {
@@ -95,4 +111,12 @@ footer a {
 
 .footer-link-text {
     padding-left: 6px;
+}
+
+.row-stats {
+    margin-top: 20px;
+}
+
+.text-color-1 {
+    color: #1bb6c4
 }

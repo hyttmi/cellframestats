@@ -1,6 +1,7 @@
 import subprocess
 import re
-from collections import Counter
+from datetime import datetime
+import sqlite3
 
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"
@@ -34,4 +35,3 @@ def fetch_all_activated_wallets():
         return len(unique_wallets)
     else:
         return None
-

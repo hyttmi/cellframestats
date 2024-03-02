@@ -23,17 +23,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', path='img/favicons/apple-touch-icon.png') }}">
-<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', path='img/favicons/favicon-32x32.png') }}">
-<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', path='img/favicons/favicon-16x16.png') }}">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="{{ url_for('static', path='img/favicons/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ url_for('static', path='img/favicons/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ url_for('static', path='img/favicons/favicon-16x16.png') }}">
     <title>Cellframestats</title>
 </head>
 
 <body>
     <div class="container">
-    <div class="row mx-auto"><img class="logo flex-d mx-auto" src="{{ url_for('static', path='img/logo.svg') }}"></div>
+        <div class="row mx-auto"><img class="logo flex-d mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
+        </div>
     </div>
     <nav class="navbar navbar-expand-lg">
         <div class="container">
@@ -66,42 +72,44 @@
         </div>
     </nav>
 
-    <div class="container main-content shadow-lg">
+    <div class="container net-stats">
         <div class="row text-center">
-            <h1 class="row-stats row-stats-heading text-uppercase mx-auto"><strong>backbone network statistics</strong>
+            <h1 class="row-stats row-stats-heading text-uppercase display-4 mx-auto">backbone network statistics
             </h1>
         </div>
         <div class="row flex-grow-1 row-stats text-uppercase font-weight-bold">
             <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="{{ active_wallets }}" class="counter card-heading">0</h1>
-                <h5>Total unique wallets</h5>
+                <h1 data-real-value="{{ active_wallets }}" class="counter display-4 card-heading">0</h1>
+                <h6>Total unique wallets</h6>
             </div>
             <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="{{ main_blocks }}" class="counter card-heading">0</h1>
-                <h5>Total blocks on main chain</h5>
+                <h1 data-real-value="{{ main_blocks }}" class="counter display-4 card-heading">0</h1>
+                <h6>Total blocks on main chain</h6>
             </div>
             <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="{{ all_transactions }}" class="card-heading counter">0</h1>
-                <h5>Total transactions</h5>
+                <h1 data-real-value="37069" class="card-heading display-4 counter">0</h1>
+                <h6>Total transactions</h6>
             </div>
         </div>
         <div class="row flex-grow-1 row-stats text-uppercase font-weight-bold">
             <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="{{ active_nodes }}" class="counter card-heading">0</h1>
-                <h5>masternodes</h5>
+                <h1 data-real-value="{{ active_nodes }}" class="counter display-4 card-heading">0</h1>
+                <h6>masternodes</h6>
             </div>
             <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="302465" class="counter card-heading">0</h1>
-                <h5>staked cell tokens</h5>
+                <h1 data-real-value="{{ all_stakes }}" class="counter display-4 card-heading">0</h1>
+                <h6>staked cell tokens</h6>
             </div>
             <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="3634664" class="card-heading counter">0</h1>
-                <h5>Total something</h5>
+                <h1 data-real-value="42" class="card-heading display-4 counter">0</h1>
+                <h6>Answer to universe</h6>
             </div>
         </div>
+    </div>
+    <div class="container main-content shadow-lg">
         <div class="row flex-grow-1 row-stats info">
             <div class="col-sm-8">
-                <h2 class="text-uppercase row-stats-heading">information</h2>
+                <h2 class="text-uppercase text-color-1">information</h2>
                 <p>Cellframestats is a statistics / charting service intented to serve those running nodes on
                     3rd generation, quantum-proof novel blockchain.
 
@@ -151,8 +159,8 @@
             counters.forEach(function (counter) {
                 var realValue = parseInt(counter.getAttribute('data-real-value'));
                 var currentValue = parseInt(counter.innerHTML);
-                var duration = 2000; // Duration of the animation in milliseconds
-                var steps = 100; // Number of steps for the animation
+                var duration = 2000;
+                var steps = 100;
 
                 var increment = (realValue - currentValue) / steps;
                 var stepDuration = duration / steps;
@@ -165,7 +173,7 @@
                     step++;
                     if (step >= steps) {
                         clearInterval(interval);
-                        counter.innerHTML = realValue; // Ensure final value is displayed accurately
+                        counter.innerHTML = realValue;
                     }
                 }, stepDuration);
             });
