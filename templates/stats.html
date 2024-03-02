@@ -17,19 +17,30 @@
 
         gtag('config', 'G-FEPK7JS9E3');
     </script>
-    <link rel="shortcut icon" type="image/x-icon" href="http://cellframestats.com/favicon.ico">
     <title>Cellframestats</title>
     <link href="{{ url_for('static', path='style.css') }}" rel="stylesheet">
     <script src="https://kit.fontawesome.com/ed38ca7e1a.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Blinker:wght@100;200;300;400;600;700;800;900&display=swap"
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
-
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="{{ url_for('static', path='img/favicons/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ url_for('static', path='img/favicons/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ url_for('static', path='img/favicons/favicon-16x16.png') }}">
     <title>Cellframestats</title>
 </head>
 
 <body>
+    <div class="container">
+        <div class="row mx-auto"><img class="logo flex-d mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
+        </div>
+    </div>
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -60,115 +71,101 @@
             </div>
         </div>
     </nav>
-
     <div class="container main-content shadow-lg">
-        <div class="row flex-grow-1">
-            <div class="col-sm-6 row-stats row-stats-heading text-uppercase">
-            <h1><strong>backbone network statistics</strong></h1></div>
-        </div>
-        <div class="row flex-grow-1 row-stats text-uppercase font-weight-bold">
-            <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="984" class="counter card-heading">0</h1>
-                <h5><strong>Total unique wallets</strong></h5>
-            </div>
-            <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="28861" class="counter card-heading">0</h1>
-                <h5><strong>Total blocks on main chain</strong></h5>
-            </div>
-            <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="36494" class="card-heading counter">0</h1>
-                <h5><strong>Total transactions</strong></h5>
-            </div>
-        </div>
-        <div class="row flex-grow-1 row-stats text-uppercase font-weight-bold">
-            <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="{{ value }}" class="counter card-heading">0</h1>
-                <h5><strong>masternodes</strong></h5>
-            </div>
-            <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="302465" class="counter card-heading">0</h1>
-                <h5><strong>staked cell tokens</strong></h5>
-            </div>
-            <div class="col-sm-4 text-center stats">
-                <h1 data-real-value="3634664" class="card-heading counter">0</h1>
-                <h5><strong>Total something</strong></h5>
-            </div>
-        </div>
-        <div class="row flex-grow-1">
-            <div class="col-sm-6 row-stats row-stats-heading text-uppercase">
-            <h1><strong>information</strong></h1></div>
-        </div>
         <div class="row flex-grow-1 row-stats info">
-            <div class="col-sm-8">
-                <p>Cellframestats is a statistics / charting service intented to serve those running nodes on
-                    3rd generation, quantum-proof novel blockchain.
-
-                    This website is built by some enthusiastic Cellframe supporters, who are doing this on their spare
-                    time.</p>
-
-                <p>If you are new to the Cellframe ecosystem, here is a quick recap of the tech:</p>
-                <ul>
-                    <li>Quantum hack proof (using NIST recommended encryption methods)</li>
-                    <li>Multi-signatures</li>
-                    <li>Written in C</li>
-                    <li>Has a powerful SDK for C language</li>
-                    <li>Includes also a Python API for plugins</li>
-                </ul>
+            <h2 class="text-uppercase text-color-1">Backbone charts</h2>
+            <div class="col-sm-6">
+                <canvas id="chart_blocks_7_days"></canvas>
+            </div>
+            <div class="col-sm-6">
+                <canvas id="chart_blocks_30_days"></canvas>
             </div>
         </div>
     </div>
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-sm-3 info">
-                    <h3 class="footer-heading">Useful links</h3>
-
-                    <p class="footer-link-text"><a href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
-                    <p class="footer-link-text"><a href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
-                    <p class="footer-link-text"><a href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
-                    <p class="footer-link-text"><a href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
-                    <p class="footer-link-text"><a href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
-                    <p class="footer-link-text"><a href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
+                <div class="col-sm-3 info text-uppercase">
+                    <h3 class="footer-heading ">Cellframe links</h3>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="https://cellframe.net">Cellframe
+                            website</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank"
+                            href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank"
+                            href="https://gitlab.demlabs.net/cellframe">Cellframe Gitlab</a></p>
                 </div>
-                <div class="col-sm-3 info">
+                <div class="col-sm-3 info  text-uppercase">
                     <h3 class="footer-heading">Contact us</h3>
-                    <p class="footer-link-text"><a href="t.me/@Tradernoob76">@Tradernoob76</a></p>
-                    <p class="footer-link-text"><a href="t.me/@CELLgainz">@CELLgainz</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@Tradernoob76"><i
+                                class="fa-brands fa-telegram"></i>
+                            Tradernoob76</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@CELLgainz"> <i
+                                class="fa-brands fa-telegram"></i>
+                            CELLgainz</a></p>
                 </div>
+                <p class="text-center">This site is not affiliated in any way with Demlabs (company) or it's projects
+                    (e.g. Cellframe)</p>
             </div>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            startCount();
-        });
-
-        function startCount() {
-            var counters = document.querySelectorAll('.counter');
-
-            counters.forEach(function (counter) {
-                var realValue = parseInt(counter.getAttribute('data-real-value'));
-                var currentValue = parseInt(counter.innerHTML);
-                var duration = 2000; // Duration of the animation in milliseconds
-                var steps = 100; // Number of steps for the animation
-
-                var increment = (realValue - currentValue) / steps;
-                var stepDuration = duration / steps;
-
-                var step = 0;
-
-                var interval = setInterval(function () {
-                    currentValue += increment;
-                    counter.innerHTML = Math.floor(currentValue);
-                    step++;
-                    if (step >= steps) {
-                        clearInterval(interval);
-                        counter.innerHTML = realValue; // Ensure final value is displayed accurately
-                    }
-                }, stepDuration);
+        function createChart(ctxId, data, options, period) {
+            const ctx = document.getElementById(ctxId);
+            const labels = data.map(entry => entry[0]);
+            const dataset = {
+                label: `Daily blocks / ${period} days`,
+                data: data.map(entry => entry[1]),
+                backgroundColor: '#1bb6c4' // Set bar color
+            };
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [dataset]
+                },
+                options: options
             });
         }
+    
+        const latest_7_blocks = {{ latest_7_blocks | tojson }};
+        const latest_30_blocks = {{ latest_30_blocks | tojson }};
+    
+        const options = {
+            plugins: {
+                title: {
+                    color: '#1bb6c4' // Set title text color
+                },
+                legend: {
+                    labels: {
+                        color: '#1bb6c4' // Set legend label text color
+                    }
+                },
+                tooltip: {
+                    bodyColor: '#1bb6c4', // Set tooltip body text color
+                    titleColor: '#1bb6c4' // Set tooltip title text color
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#1bb6c4' // Set y-axis label color
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#1bb6c4' // Set x-axis label color
+                    }
+                }
+            }
+        };
+    
+        createChart('chart_blocks_7_days', latest_7_blocks, options, 7);
+        createChart('chart_blocks_30_days', latest_30_blocks, options, 30);
     </script>
+    
+
 </body>
 
 </html>

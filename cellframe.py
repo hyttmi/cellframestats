@@ -22,5 +22,7 @@ async def read_root(request: Request):
                                                      "all_stakes": all_stakes})
 
 @app.get("/stats", response_class=HTMLResponse)
-async def read_root(request: Request):
-    return templates.TemplateResponse("stats.html", {"request": request})
+async def read_stats(request: Request):
+    get_7_blocks = du.chart_daily_blocks(7)
+    get_30_blocks = du.chart_daily_blocks(30)
+    return templates.TemplateResponse("stats.html", {"request": request, "latest_7_blocks": get_7_blocks, "latest_30_blocks": get_30_blocks})

@@ -1,5 +1,5 @@
-
-body, html {
+body,
+html {
     font-family: "Poppins", sans-serif;
     background-image: url("img/bg.jpg");
     background-size: cover;
@@ -34,13 +34,14 @@ body, html {
     padding-top: 18px;
 }
 
-.navbar-nav .nav-link.active, .navbar-nav .nav-link.show {
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link.show {
     color: #131313;
     background-color: #119eaa;
 }
 
 .nav-link:hover {
-    color:#131313;
+    color: #131313;
     background-color: #119eaa;
 }
 
@@ -55,17 +56,18 @@ body, html {
     --bs-navbar-toggler-focus-width: 0;
     --bs-navbar-toggler-transition: none;
     --bs-navbar-toggler-border-color: rgba(0, 0, 0, 0.1);
-  }
-  .navbar-dark {
+}
+
+.navbar-dark {
     --bs-navbar-toggler-border-color: none;
-  }
-  
+}
+
 .main-content {
     margin-top: 30px;
     background-color: #131313;
 }
 
-.row-stats-heading {    
+.row-stats-heading {
     margin-top: 12px;
     color: #1bb6c4;
     font-weight: bold;
@@ -99,13 +101,7 @@ footer {
     color: #131313;
 }
 
-footer a {
-    color: #1bb6c4;
-    text-decoration: none;
-}
-
 .footer-heading {
-    border-bottom: 5px dotted #1bb6c4;
     padding: 6px;
 }
 
@@ -118,5 +114,14 @@ footer a {
 }
 
 .text-color-1 {
-    color: #1bb6c4
+    color: #1bb6c4;
+}
+
+.link {
+    color: #1bb6c4;
+    text-decoration: none;
+}
+
+.link:hover {
+    color: #119eaa
 }
