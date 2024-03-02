@@ -169,11 +169,11 @@
 
                 var interval = setInterval(function () {
                     currentValue += increment;
-                    counter.innerHTML = Math.floor(currentValue);
+                    counter.innerHTML = Math.floor(currentValue).toLocaleString();
                     step++;
                     if (step >= steps) {
                         clearInterval(interval);
-                        counter.innerHTML = realValue;
+                        counter.innerHTML = realValue.toLocaleString();
                     }
                 }, stepDuration);
             });
