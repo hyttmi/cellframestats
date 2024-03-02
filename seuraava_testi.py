@@ -9,6 +9,7 @@ import re
 import json
 from requests.auth import HTTPBasicAuth
 import requests_unixsocket
+from datetime import datetime
 
 def old_line():
     return 0
@@ -1558,6 +1559,38 @@ def main_hashing():
 
         file.close()
         return 1
+    
+def fetch_all_tx():
+    cmd_output = fire_and_split_command("cellframe-node-cli ledger tx -all -net Backbone", False)
+    matches = re.findall(r'transaction: (?:\(emit\)\s)?hash (.*?)\n.*?TS Created: (.*?)\n', cmd_output, re.DOTALL)
+    txs_by_date = {}
+    for match in matches:
+        hash_value = match[0].strip()
+        timestamp = datetime.strptime(match[1].strip(),'%a %b %d %H:%M:%S %Y')
+        date_key = timestamp.strftime('%-d.%-m.%Y')
+        if date_key in txs_by_date:
+            txs_by_date[date_key].append(hash_value)
+        else:
+            txs_by_date[date_key] = [hash_value]
+    return txs_by_date
+
+def insert_tx_to_db():
+    conn = sqlite3.connect('databases/cellframe.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS txs
+                      (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                      date TEXT,
+                      amount INTEGER)''')
+
+    x = fetch_all_tx()
+    
+    for date, hashes in x.items():
+        hash_count = len(hashes)
+        cursor.execute("INSERT INTO txs (date, amount) VALUES (?, ?)", (date, hash_count))
+        
+    conn.commit()
+    conn.close()
 
 
 ##### TO RESET BLOCKS / SIGNATURES ####
