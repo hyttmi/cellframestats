@@ -38,6 +38,7 @@ def fetch_all_staked_tokens():
         for amount in row:
             values.append(float(amount[0]))
         return round(math.fsum(values))    
+
 def chart_daily_blocks(num_days):
     con = create_connection("databases/blocks.db")
     counts_per_day = {}
@@ -51,6 +52,7 @@ def chart_daily_blocks(num_days):
             counts_per_day[date_str] = result[0]
         else:
             counts_per_day[date_str] = 0
-        cursor.close()  # Close the cursor to release resources
-    con.close()  # Close the connection
+        cursor.close() 
+    con.close()
+    counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day

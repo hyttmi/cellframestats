@@ -100,8 +100,9 @@
             const ctx = document.getElementById(ctxId);
             const labels = Object.keys(data).map(dateString => {
                 const date = new Date(dateString);
-                return date.toLocaleDateString('en-US'); // Change 'en-US' to your desired locale
+                return date.toLocaleDateString();
             });
+            
             const dataset = {
                 label: `Daily blocks / ${period} days`,
                 data: Object.values(data),
