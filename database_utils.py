@@ -28,7 +28,6 @@ def fetch_all_transactions():
 def fetch_all_staked_tokens():
     conn = create_connection("databases/cellframe.db")
     cursor = conn.cursor()
-
     cursor.execute("SELECT value FROM stakes;")
     row = cursor.fetchall()
     cursor.close()
@@ -38,6 +37,13 @@ def fetch_all_staked_tokens():
         for amount in row:
             values.append(float(amount[0]))
         return round(math.fsum(values))    
+    
+def fetch_blocks_on_main():
+    conn = create_connection("databases/blocks.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM blocks")
+    row = cursor.fetchone()
+    return int(row[0])
 
 def chart_daily_blocks(num_days):
     con = create_connection("databases/blocks.db")
