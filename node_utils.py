@@ -68,3 +68,5 @@ def fetch_all_blocks():
 create_table()
 blocks_data = multiprocessing.Process(target=fetch_all_blocks())
 blocks_data.start()
+
+# TODO: Figure a way to update the databases safely on the fly
