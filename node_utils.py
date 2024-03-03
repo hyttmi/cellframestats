@@ -2,6 +2,7 @@ import subprocess
 import re
 from datetime import datetime
 import sqlite3
+import multiprocessing
 
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"
@@ -35,3 +36,35 @@ def fetch_all_activated_wallets():
         return len(unique_wallets)
     else:
         return None
+
+conn = sqlite3.connect('databases/blocks.db')
+c = conn.cursor()
+
+def create_table():
+    c.execute('''CREATE TABLE IF NOT EXISTS blocks
+                 (hash TEXT PRIMARY KEY, timestamp TEXT)''')
+
+def insert_block(hash, timestamp):
+    c.execute("INSERT INTO blocks (hash, timestamp) VALUES (?, ?)", (hash, timestamp))
+    conn.commit()
+
+def block_exists(hash):
+    c.execute("SELECT 1 FROM blocks WHERE hash=?", (hash,))
+    return c.fetchone() is not None
+
+def fetch_all_blocks():
+    cmd_output = sendCommand("block list -net Backbone -chain main")
+    blocks = []
+    pattern = re.findall(r"(0x[A-Z0-9]{64}): ts_create=(.*)", cmd_output)
+    if pattern:
+        for hashes, timestamp in pattern:
+            original_datetime = datetime.strptime(timestamp, "%a, %d %b %Y %H:%M:%S %z")
+            iso8601 = original_datetime.isoformat()
+            if not block_exists(hashes):
+                insert_block(hashes, iso8601)
+                blocks.append({"hash": hashes, "timestamp": iso8601})
+    return blocks
+
+create_table()
+blocks_data = multiprocessing.Process(target=fetch_all_blocks())
+blocks_data.start()

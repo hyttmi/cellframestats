@@ -38,7 +38,7 @@
 
 <body>
     <div class="container">
-        <div class="row mx-auto"><img class="logo flex-d mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
+        <div class="row mx-auto"><img class="logo mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
         </div>
     </div>
     <nav class="navbar navbar-expand-lg">
@@ -48,37 +48,23 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse text-center" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/stats">Stats</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Zerochain</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Nodes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Richlist</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Timeline</a>
-                    </li>
-                </ul>
+                {% include "nav.html" %}
             </div>
         </div>
     </nav>
     <div class="container main-content shadow-lg">
-        <div class="row flex-grow-1 row-stats info">
+        <div class="row row-stats info">
             <h2 class="text-uppercase text-color-1">Backbone charts</h2>
             <div class="col-sm-6">
                 <canvas id="chart_blocks_7_days"></canvas>
             </div>
             <div class="col-sm-6">
                 <canvas id="chart_blocks_30_days"></canvas>
+            </div>
+        </div>
+        <div class="row row-stats info">
+            <div class="col-sm-12">
+                <canvas id="chart_blocks_365_days"></canvas>
             </div>
         </div>
     </div>
@@ -110,16 +96,21 @@
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        function createChart(ctxId, data, options, period) {
+        function createChart(ctxId, data, options, period, type) {
             const ctx = document.getElementById(ctxId);
-            const labels = data.map(entry => entry[0]);
+            const labels = Object.keys(data).map(dateString => {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US'); // Change 'en-US' to your desired locale
+            });
             const dataset = {
                 label: `Daily blocks / ${period} days`,
-                data: data.map(entry => entry[1]),
-                backgroundColor: '#1bb6c4' // Set bar color
+                data: Object.values(data),
+                backgroundColor: type === "line" ? '#1bb6c4' : '#1bb6c4',
+                borderColor: '#1bb6c4',
+                borderWidth: 2
             };
             new Chart(ctx, {
-                type: 'bar',
+                type: type,
                 data: {
                     labels: labels,
                     datasets: [dataset]
@@ -127,10 +118,12 @@
                 options: options
             });
         }
-    
-        const latest_7_blocks = {{ latest_7_blocks | tojson }};
-        const latest_30_blocks = {{ latest_30_blocks | tojson }};
-    
+
+
+        const latest_7_blocks = {{ latest_7_blocks | safe }};
+        const latest_30_blocks = {{ latest_30_blocks | safe }};
+        const latest_365_blocks = {{ latest_365_blocks | safe }};
+
         const options = {
             plugins: {
                 title: {
@@ -160,11 +153,11 @@
                 }
             }
         };
-    
-        createChart('chart_blocks_7_days', latest_7_blocks, options, 7);
-        createChart('chart_blocks_30_days', latest_30_blocks, options, 30);
+
+        createChart('chart_blocks_7_days', latest_7_blocks, options, 7, "bar");
+        createChart('chart_blocks_30_days', latest_30_blocks, options, 30, "bar");
+        createChart('chart_blocks_365_days', latest_365_blocks, options, 365, "line");
     </script>
-    
 
 </body>
 

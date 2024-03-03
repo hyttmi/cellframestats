@@ -18,11 +18,12 @@ async def read_root(request: Request):
     wallets = nu.fetch_all_activated_wallets()
     all_tx = du.fetch_all_transactions()
     all_stakes = du.fetch_all_staked_tokens()
-    return templates.TemplateResponse("index.html", {"request": request, "active_nodes": masternodes, "main_blocks": total_blocks, "active_wallets": wallets, "all_transactions": all_tx,
+    return templates.TemplateResponse("index.html", {"request": request, "active_page": "home", "active_nodes": masternodes, "main_blocks": total_blocks, "active_wallets": wallets, "all_transactions": all_tx,
                                                      "all_stakes": all_stakes})
 
 @app.get("/stats", response_class=HTMLResponse)
 async def read_stats(request: Request):
     get_7_blocks = du.chart_daily_blocks(7)
     get_30_blocks = du.chart_daily_blocks(30)
-    return templates.TemplateResponse("stats.html", {"request": request, "latest_7_blocks": get_7_blocks, "latest_30_blocks": get_30_blocks})
+    get_365_blocks = du.chart_daily_blocks(365)
+    return templates.TemplateResponse("stats.html", {"request": request, "active_page": "stats", "latest_7_blocks": get_7_blocks, "latest_30_blocks": get_30_blocks, "latest_365_blocks": get_365_blocks})

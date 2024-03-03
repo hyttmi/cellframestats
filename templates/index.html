@@ -48,26 +48,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse text-center" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link active" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/stats">Stats</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Zerochain</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Nodes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Richlist</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Timeline</a>
-                    </li>
-                </ul>
+                {% include "nav.html" %}
             </div>
         </div>
     </nav>
@@ -77,7 +58,7 @@
             <h1 class="row-stats row-stats-heading text-uppercase display-4 mx-auto">backbone network statistics
             </h1>
         </div>
-        <div class="row flex-grow-1 row-stats text-uppercase font-weight-bold">
+        <div class="row row-stats text-uppercase font-weight-bold">
             <div class="col-sm-4 text-center stats">
                 <h1 data-real-value="{{ active_wallets }}" class="counter display-4 card-heading">0</h1>
                 <h6>Total unique wallets</h6>
@@ -91,7 +72,7 @@
                 <h6>Total transactions</h6>
             </div>
         </div>
-        <div class="row flex-grow-1 row-stats text-uppercase font-weight-bold">
+        <div class="row row-stats text-uppercase font-weight-bold">
             <div class="col-sm-4 text-center stats">
                 <h1 data-real-value="{{ active_nodes }}" class="counter display-4 card-heading">0</h1>
                 <h6>masternodes</h6>
@@ -107,7 +88,47 @@
         </div>
     </div>
     <div class="container main-content shadow-lg">
-        <div class="row flex-grow-1 row-stats info">
+        <div class="row row-stats info">
+            <div class="col-sm-8">
+                <h2 class="text-uppercase text-color-1">information</h2>
+                <p>Cellframestats is a statistics/charting service intended to serve those running nodes on the 3rd
+                    generation, quantum-proof novel blockchain.</p>
+
+                <p>This website is built by enthusiastic Cellframe supporters who are doing this in their spare time.
+                </p>
+
+                <p>If you are new to the Cellframe ecosystem, here is a quick recap of the technology:</p>
+                <ul>
+                    <li>Quantum hack-proof (using NIST-recommended encryption methods)</li>
+                    <li>Supports multi-signatures</li>
+                    <li>Designed to be modular</li>
+                    <li>Written in the C language</li>
+                    <li>Comes with a powerful SDK for the C language</li>
+                    <li>Provides a Python API for plugins</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row row-stats info">
+            <div class="col-sm-8">
+                <h2 class="text-uppercase text-color-1">information</h2>
+                <p>Cellframestats is a statistics/charting service intended to serve those running nodes on the 3rd
+                    generation, quantum-proof novel blockchain.</p>
+
+                <p>This website is built by enthusiastic Cellframe supporters who are doing this in their spare time.
+                </p>
+
+                <p>If you are new to the Cellframe ecosystem, here is a quick recap of the technology:</p>
+                <ul>
+                    <li>Quantum hack-proof (using NIST-recommended encryption methods)</li>
+                    <li>Supports multi-signatures</li>
+                    <li>Designed to be modular</li>
+                    <li>Written in the C language</li>
+                    <li>Comes with a powerful SDK for the C language</li>
+                    <li>Provides a Python API for plugins</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row row-stats info">
             <div class="col-sm-8">
                 <h2 class="text-uppercase text-color-1">information</h2>
                 <p>Cellframestats is a statistics/charting service intended to serve those running nodes on the 3rd
