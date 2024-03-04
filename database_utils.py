@@ -14,12 +14,10 @@ def create_connection(db_file): #make connection to the database and return con 
 def fetch_all_transactions():
     conn = create_connection("databases/cellframe.db")
     cursor = conn.cursor()
-
     cursor.execute("SELECT cumulative_transactions FROM transactions ORDER BY id DESC LIMIT 1")
     row = cursor.fetchone()
     cursor.close()
     conn.close()
-
     if row:
         return int(row[0])
     else:

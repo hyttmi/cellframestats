@@ -2,7 +2,8 @@ import subprocess
 import re
 from datetime import datetime
 import sqlite3
-import multiprocessing
+import threading
+import math
 
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"
@@ -18,15 +19,6 @@ def fetch_active_nodes():
     if pattern:
         return len(pattern)
     return None
-
-def fetch_blocks_on_main():
-    cmd = sendCommand("block list -net Backbone -chain main")
-    pattern = re.search(r".*Have (\d+) blocks", cmd)
-    if pattern:
-        num_blocks = pattern.group(1)
-        return int(num_blocks)
-    else:
-        return None
     
 def fetch_all_activated_wallets():
     cmd_output = sendCommand("ledger list balance -net Backbone")

@@ -64,7 +64,7 @@
         </div>
         <div class="row row-stats info">
             <div class="col-sm-12">
-                <canvas id="chart_blocks_365_days"></canvas>
+                <canvas id="chart_blocks_120_days"></canvas>
             </div>
         </div>
     </div>
@@ -123,7 +123,7 @@
 
         const latest_7_blocks = {{ latest_7_blocks | safe }};
         const latest_30_blocks = {{ latest_30_blocks | safe }};
-        const latest_365_blocks = {{ latest_365_blocks | safe }};
+        const latest_120_blocks = {{ latest_120_blocks | safe }};
 
         const options = {
             plugins: {
@@ -157,7 +157,7 @@
 
         createChart('chart_blocks_7_days', latest_7_blocks, options, 7, "bar");
         createChart('chart_blocks_30_days', latest_30_blocks, options, 30, "bar");
-        createChart('chart_blocks_365_days', latest_365_blocks, options, 365, "line");
+        createChart('chart_blocks_120_days', latest_120_blocks, options, 120, "line");
     </script>
 
 </body>

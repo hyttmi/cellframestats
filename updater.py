@@ -38,13 +38,13 @@ def fetch_and_insert_blocks():
             if not block_exists(hashes):
                 insert_block(hashes, iso8601)
                 blocks.append({"hash": hashes, "timestamp": iso8601})
-    copy_to_main_table()  # After updating the temporary table, copy its data to the main table
+    copy_to_main_table()
 
 def copy_to_main_table():
     conn = sqlite3.connect('databases/blocks.db')
     c = conn.cursor()
-    c.execute('DELETE FROM blocks')  # Clear main table
-    c.execute('INSERT INTO blocks SELECT * FROM blocks_temp')  # Copy data from temporary table to main table
+    c.execute('DELETE FROM blocks')
+    c.execute('INSERT INTO blocks SELECT * FROM blocks_temp')
     conn.commit()
     print("Update process done!")
     conn.close()
