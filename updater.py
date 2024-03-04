@@ -8,14 +8,14 @@ def create_table():
     conn = sqlite3.connect('databases/blocks.db')
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS blocks_temp
-                 (hash TEXT PRIMARY KEY, timestamp TEXT)''')  # Create a temporary table
+                 (hash TEXT PRIMARY KEY, timestamp TEXT)''')
     conn.commit()
     conn.close()
 
 def insert_block(hash, timestamp):
     conn = sqlite3.connect('databases/blocks.db')
     c = conn.cursor()
-    c.execute("INSERT INTO blocks_temp (hash, timestamp) VALUES (?, ?)", (hash, timestamp))  # Insert into temporary table
+    c.execute("INSERT INTO blocks_temp (hash, timestamp) VALUES (?, ?)", (hash, timestamp))
     conn.commit()
     conn.close()
 
