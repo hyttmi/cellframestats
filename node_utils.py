@@ -1,9 +1,5 @@
 import subprocess
 import re
-from datetime import datetime
-import sqlite3
-import threading
-import math
 
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"

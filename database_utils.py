@@ -16,6 +16,7 @@ def fetch_all_transactions():
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(*) FROM transactions")
     row = cursor.fetchone()[0]
+    print(row)
     cursor.close()
     conn.close()
     return row
