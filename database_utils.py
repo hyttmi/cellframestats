@@ -12,16 +12,13 @@ def create_connection(db_file): #make connection to the database and return con 
     return con
 
 def fetch_all_transactions():
-    conn = create_connection("databases/cellframe.db")
+    conn = create_connection("databases/transactions.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT cumulative_transactions FROM transactions ORDER BY id DESC LIMIT 1")
-    row = cursor.fetchone()
+    cursor.execute("SELECT COUNT(*) FROM transactions")
+    row = cursor.fetchone()[0]
     cursor.close()
     conn.close()
-    if row:
-        return int(row[0])
-    else:
-        return None
+    return row
     
 def fetch_all_staked_tokens():
     conn = create_connection("databases/cellframe.db")
