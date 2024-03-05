@@ -25,3 +25,4 @@ def fetch_all_activated_wallets():
     else:
         return None
         
+        
