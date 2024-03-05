@@ -98,7 +98,7 @@
             const dataset = {
                 label: `Daily blocks / ${period} days`,
                 data: Object.values(data),
-                backgroundColor: type === "line" ? '#1bb6c4' : '#1bb6c4',
+                backgroundColor: '#1bb6c4',
                 borderColor: '#1bb6c4',
                 borderWidth: 2
             };
@@ -120,28 +120,28 @@
         const options = {
             plugins: {
                 title: {
-                    color: '#1bb6c4' // Set title text color
+                    color: '#1bb6c4'
                 },
                 legend: {
                     labels: {
-                        color: '#1bb6c4' // Set legend label text color
+                        color: '#1bb6c4'
                     }
                 },
                 tooltip: {
-                    bodyColor: '#1bb6c4', // Set tooltip body text color
-                    titleColor: '#1bb6c4' // Set tooltip title text color
+                    bodyColor: '#1bb6c4',
+                    titleColor: '#1bb6c4'
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        color: '#1bb6c4' // Set y-axis label color
+                        color: '#1bb6c4'
                     }
                 },
                 x: {
                     ticks: {
-                        color: '#1bb6c4' // Set x-axis label color
+                        color: '#1bb6c4'
                     }
                 }
             }

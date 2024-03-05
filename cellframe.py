@@ -25,3 +25,7 @@ async def read_stats(request: Request):
                                                      "latest_7_blocks": du.chart_daily_blocks(7),
                                                      "latest_30_blocks": du.chart_daily_blocks(30),
                                                      "latest_120_blocks": du.chart_daily_blocks(120)})
+
+@app.get("/nodes", response_class=HTMLResponse)
+async def read_stats(request: Request):
+    return templates.TemplateResponse("nodes.html", {"request": request, "active_page": "nodes"})

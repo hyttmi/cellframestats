@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEPK7JS9E3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-FEPK7JS9E3');
+    </script>
+    <title>Cellframestats</title>
+    <link href="{{ url_for('static', path='style.css') }}" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/ed38ca7e1a.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="{{ url_for('static', path='img/favicons/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ url_for('static', path='img/favicons/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ url_for('static', path='img/favicons/favicon-16x16.png') }}">
+    <title>Cellframestats</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row mx-auto"><img class="logo flex-d mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse text-center" id="navbarNav">
+                {% include "nav.html" %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container net-stats">
+        <div class="row text-center">
+            
+        </div>
+        
+    </div>
+    <div class="container main-content shadow-lg">
+        <div class="row row-stats info">
+            <div class="col-sm-8">
+                <h2 class="text-uppercase text-color-1">information</h2>
+                <p>Cellframestats is a statistics/charting service intended to serve those running nodes on the 3rd
+                    generation, quantum-proof novel blockchain.</p>
+
+                <p>This website is built by enthusiastic Cellframe supporters who are doing this in their spare time.
+                </p>
+
+                <p>If you are new to the Cellframe ecosystem, here is a quick recap of the technology:</p>
+                <ul>
+                    <li>Quantum hack-proof (using NIST-recommended encryption methods)</li>
+                    <li>Supports multi-signatures</li>
+                    <li>Designed to be modular</li>
+                    <li>Written in the C language</li>
+                    <li>Comes with a powerful SDK for the C language</li>
+                    <li>Provides a Python API for plugins</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3 info text-uppercase">
+                    <h3 class="footer-heading ">Cellframe links</h3>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="https://cellframe.net">Cellframe website</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="https://gitlab.demlabs.net/cellframe">Cellframe Gitlab</a></p>
+                </div>
+                <div class="col-sm-3 info  text-uppercase">
+                    <h3 class="footer-heading">Contact us</h3>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@Tradernoob76"><i class="fa-brands fa-telegram"></i>
+                            Tradernoob76</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@CELLgainz"> <i class="fa-brands fa-telegram"></i>
+                            CELLgainz</a></p>
+                </div>
+                <p class="text-center">This site is not affiliated in any way with Demlabs (company) or it's projects
+                    (e.g. Cellframe)</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
