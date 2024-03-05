@@ -24,3 +24,4 @@ def fetch_all_activated_wallets():
         return len(unique_wallets)
     else:
         return None
+        
