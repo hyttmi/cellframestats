@@ -61,7 +61,7 @@ def fetch_and_insert_blocks():
             if not data_exists("blocks", hashes):
                 insert_data("blocks", hashes, iso8601)
                 blocks.append({"hash": hashes, "timestamp": iso8601})
-    copy_to_main_table("blocks")
+        copy_to_main_table("blocks")
 
 def fetch_and_insert_transactions():
     cmd_output = nu.sendCommand("ledger tx -all -net Backbone")
@@ -74,7 +74,7 @@ def fetch_and_insert_transactions():
             if not data_exists("transactions", hashes):
                 insert_data("transactions", hashes, iso8601)
                 transactions.append({"hash": hashes, "timestamp": iso8601})
-    copy_to_main_table("transactions")
+        copy_to_main_table("transactions")
 
 def copy_to_main_table(db_name):
     conn = sqlite3.connect(f"databases/{db_name}.db")
@@ -89,13 +89,21 @@ def copy_to_main_table(db_name):
 def update_blocks():
     print("Updating blocks database...")
     create_tables("blocks")
-    fetch_and_insert_blocks()
+    try:
+        fetch_and_insert_blocks()
+    except Exception as e:
+        print(f"An error occurred while updating blocks: {e}")
+        return
     
 @every_1_minute
 def update_transactions():
     print("Updating transactions database...")
     create_tables("transactions")
-    fetch_and_insert_transactions()
+    try:
+        fetch_and_insert_transactions()
+    except Exception as e:
+        print(f"An error occurred while updating transactions: {e}")
+        return
 
 if __name__ == "__main__":
     tx_thread = threading.Thread(target=update_transactions)

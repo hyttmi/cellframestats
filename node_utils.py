@@ -4,9 +4,15 @@ import re
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"
     try:
-        result = subprocess.check_output(full_command, shell=True, text=True).strip()
+        process = subprocess.Popen(full_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        output, error = process.communicate()
+        
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(process.returncode, full_command, output=output, stderr=error)
+        result = output.strip()
         return result
-    except subprocess.CalledProcessError as e:
+    except Exception as e:
+        print(f"Exception occurred while executing command: {e}")
         return f"Error: {e}"
     
 def fetch_active_nodes():
@@ -25,4 +31,5 @@ def fetch_all_activated_wallets():
     else:
         return None
         
+sendCommand("version")
         
