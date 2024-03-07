@@ -62,6 +62,8 @@ def fetch_and_insert_blocks():
                 insert_data("blocks", hashes, iso8601)
                 blocks.append({"hash": hashes, "timestamp": iso8601})
         copy_to_main_table("blocks")
+    else:
+        print("Failed to update blocks database!")
 
 def fetch_and_insert_transactions():
     cmd_output = nu.sendCommand("ledger tx -all -net Backbone")
@@ -75,6 +77,8 @@ def fetch_and_insert_transactions():
                 insert_data("transactions", hashes, iso8601)
                 transactions.append({"hash": hashes, "timestamp": iso8601})
         copy_to_main_table("transactions")
+    else:
+        print("Failed to update transactions database!")
 
 def copy_to_main_table(db_name):
     conn = sqlite3.connect(f"databases/{db_name}.db")
