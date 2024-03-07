@@ -3,6 +3,17 @@
 {% include "head.html" %}
 
 <body>
+    <div class="container-flex text-center">
+        <div class="col-sm-12 text-center alert_red">
+            <p class="alert">This is an example alert</p>
+        </div>
+        <div class="col-sm-12 text-center alert_yellow">
+            <p class="alert">This is an example alert</p>
+        </div>
+        <div class="col-sm-12 text-center alert_green">
+            <p class="alert">This is an example alert</p>
+        </div>
+    </div>
     <div class="container">
         <div class="row mx-auto"><img class="logo flex-d mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
         </div>

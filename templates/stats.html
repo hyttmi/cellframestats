@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
-    {% include "head.html" %}
+{% include "head.html" %}
+
 <body>
     <div class="container">
         <div class="row mx-auto"><img class="logo mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
@@ -67,7 +68,7 @@
                 const date = new Date(dateString);
                 return date.toLocaleDateString();
             });
-            
+
             const dataset = {
                 label: `Daily blocks / ${period} days`,
                 data: Object.values(data),

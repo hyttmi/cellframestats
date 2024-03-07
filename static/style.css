@@ -122,3 +122,25 @@ footer {
 .link:hover {
     color: #119eaa
 }
+
+.alert_red {
+    background-color: rgba(255, 0, 0, 0.35); /* Red with 60% opacity */
+}
+
+.alert_yellow {
+    background-color: rgba(255, 251, 3, 0.35); /* Red with 60% opacity */
+}
+
+.alert_green {
+    background-color: rgba(0, 163, 41, 0.35); /* Red with 60% opacity */
+}
+
+.alert {
+    padding: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.alert p {
+    color: white;
+}
