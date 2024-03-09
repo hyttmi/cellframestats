@@ -28,4 +28,5 @@ async def read_stats(request: Request):
 
 @app.get("/nodes", response_class=HTMLResponse)
 async def read_stats(request: Request):
-    return templates.TemplateResponse("nodes.html", {"request": request, "active_page": "nodes"})
+    return templates.TemplateResponse("nodes.html", {"request": request, "active_page": "nodes",
+                                                     "node_info": du.fetch_all_node_info()})

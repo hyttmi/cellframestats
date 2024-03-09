@@ -57,3 +57,14 @@ def chart_daily_blocks(num_days):
     con.close()
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day
+
+def fetch_all_node_info():
+    conn = create_connection("databases/cellframe.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM cellframe_data;")
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    if rows:
+        print(rows)
+        return rows

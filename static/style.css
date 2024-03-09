@@ -3,6 +3,7 @@ html {
     font-family: "Poppins", sans-serif;
     background-image: url("img/bg.jpg");
     background-size: cover;
+    height: 100%;
 }
 
 .logo {
@@ -115,20 +116,20 @@ footer {
     text-decoration: none;
 }
 
-.link:hover {
+.link:hover, .modal-title {
     color: #119eaa
 }
 
 .alert_red {
-    background-color: rgba(255, 0, 0, 0.35); /* Red with 60% opacity */
+    background-color: rgba(255, 0, 0, 0.35);
 }
 
 .alert_yellow {
-    background-color: rgba(255, 251, 3, 0.35); /* Red with 60% opacity */
+    background-color: rgba(255, 251, 3, 0.35);
 }
 
 .alert_green {
-    background-color: rgba(0, 163, 41, 0.35); /* Red with 60% opacity */
+    background-color: rgba(0, 163, 41, 0.35);
 }
 
 .alert {
@@ -139,4 +140,19 @@ footer {
 
 .alert p {
     color: white;
+}
+
+#chartdiv {
+    width: 100%;
+    min-height: 700px;
+    height: 100%;
+}
+
+.statsmodal {
+    background-color: #131313 !important;
+    border: none;
+}
+
+.modal-header {
+    border: none;
 }
