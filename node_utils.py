@@ -62,7 +62,7 @@ def fetch_all_wallets_info():
     else:
         return None
 
-def fetch_top_100_wallets(token):
+def fetch_top_wallets(token, amount):
     all_wallets_info = fetch_all_wallets_info()
     
     wallets = [
@@ -72,4 +72,4 @@ def fetch_top_100_wallets(token):
     
     sorted_wallets = sorted(wallets, key=lambda x: x[f"{token} balance"], reverse=True)
     
-    return sorted_wallets[:50]
+    return sorted_wallets[:amount]

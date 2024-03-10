@@ -35,5 +35,5 @@ async def read_stats(request: Request):
 @app.get("/richlist", response_class=HTMLResponse)
 async def read_stats(request: Request):
     return templates.TemplateResponse("richlist.html", {"request": request, "active_page": "richlist",
-                                                     "wallets_info_top_100_cell": nu.fetch_top_100_wallets("CELL"),
-                                                     "wallets_info_top_100_mcell": nu.fetch_top_100_wallets("mCELL")})
+                                                     "wallets_info_top_cell": nu.fetch_top_wallets("CELL",50),
+                                                     "wallets_info_top_mcell": nu.fetch_top_wallets("mCELL",50)})

@@ -33,7 +33,7 @@
                     </thead>
                     <tbody>
                         {% set rank = namespace(value=1) %}
-                        {% for wallet in wallets_info_top_100_cell %}
+                        {% for wallet in wallets_info_top_cell %}
                             <tr>
                                 <td>{{ rank.value }}</td>
                                 <td>{{ wallet['Wallet address'] [0:50] }}</td>
@@ -58,7 +58,7 @@
                     </thead>
                     <tbody>
                         {% set rank = namespace(value=1) %}
-                        {% for wallet in wallets_info_top_100_mcell %}
+                        {% for wallet in wallets_info_top_mcell %}
                             <tr>
                                 <td>{{ rank.value }}</td>
                                 <td>{{ wallet['Wallet address'] [0:50] }}</td>
