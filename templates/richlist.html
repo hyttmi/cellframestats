@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+{% include "head.html" %}
+
+<body>
+    <div class="container">
+        <div class="row mx-auto"><img class="logo flex-d mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse text-center" id="navbarNav">
+                {% include "nav.html" %}
+            </div>
+        </div>
+    </nav>
+    <div class="container main-content shadow-lg">
+        <div class="row row-stats info">
+            <div class="col-sm-12">
+                <h2 class="text-uppercase text-color-1">Richlist</h2>
+                <div id="wallets">s</div>
+                <script>
+                    //sample data
+                    var tabledata = [
+                    {% for wallet in wallets_info %}
+                    {
+                        wallet: "{{ wallet['Wallet address'] }}",
+                        cell: "{% for balance in wallet['Balances'] %}{% if balance['Token'] == 'CELL' %}{{ balance['Amount'] / 1e18|round(9) }}{% endif %}{% endfor %}",
+                        mcell: "{% for balance in wallet['Balances'] %}{% if balance['Token'] == 'mCELL' %}{{ balance['Amount'] / 1e18|round(9) }}{% endif %}{% endfor %}"
+                    },
+                    {% endfor %}
+	                ];
+
+                    var table = new Tabulator("#wallets", {
+                        data: tabledata,
+                        layout: "fitColumns",
+                        columns: [
+                            { title: "Name", field: "wallet", sorter: "string", width: 150 },
+                            { title: "CELL", field: "cell", sorter: "number", hozAlign: "left" },
+                            { title: "mCELL", field: "mcell", sorter: "string", headerSort: false },
+                        ],
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3 info text-uppercase">
+                    <h3 class="footer-heading ">Cellframe links</h3>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="https://cellframe.net">Cellframe
+                            website</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank"
+                            href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank"
+                            href="https://gitlab.demlabs.net/cellframe">Cellframe Gitlab</a></p>
+                </div>
+                <div class="col-sm-3 info  text-uppercase">
+                    <h3 class="footer-heading">Contact us</h3>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@Tradernoob76"><i
+                                class="fa-brands fa-telegram"></i>
+                            Tradernoob76</a></p>
+                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@CELLgainz"> <i
+                                class="fa-brands fa-telegram"></i>
+                            CELLgainz</a></p>
+                </div>
+                <p class="text-center">This site is not affiliated in any way with Demlabs (company) or it's projects
+                    (e.g. Cellframe)</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

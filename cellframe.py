@@ -29,4 +29,10 @@ async def read_stats(request: Request):
 @app.get("/nodes", response_class=HTMLResponse)
 async def read_stats(request: Request):
     return templates.TemplateResponse("nodes.html", {"request": request, "active_page": "nodes",
-                                                     "node_info": du.fetch_all_node_info()})
+                                                     "node_info": du.fetch_all_node_info(),
+                                                     "wallets_info": nu.fetch_all_wallets_info()})
+
+@app.get("/richlist", response_class=HTMLResponse)
+async def read_stats(request: Request):
+    return templates.TemplateResponse("richlist.html", {"request": request, "active_page": "richlist",
+                                                     "wallets_info": nu.fetch_all_wallets_info()})

@@ -139,17 +139,10 @@ footer {
     color: white;
 }
 
-#chartdiv {
+#map {
+    padding-top: 20px;
+    margin-bottom: 50px;
     width: 100%;
-    min-height: 700px;
+    min-height: 600px;
     height: 100%;
-}
-
-.statsmodal {
-    background-color: #131313 !important;
-    border: none;
-}
-
-.modal-header {
-    border: none;
 }

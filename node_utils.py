@@ -30,6 +30,35 @@ def fetch_all_activated_wallets():
         return len(unique_wallets)
     else:
         return None
-        
-sendCommand("version")
-        
+    
+def fetch_all_wallets_info():
+    list_all_wallets = sendCommand("ledger list balance -net Backbone")
+    pattern = re.compile(r"Ledger balance key: (\w+).+token_ticker:(\w+).+balance:(\d+)")
+    print("here")
+    matches = pattern.findall(list_all_wallets)
+    if matches:
+        wallet_totals = {}
+        for match in matches:
+            wallet_address = match[0]
+            token_ticker = match[1]
+            amount = int(match[2])
+            if wallet_address == "null":
+                continue
+            if token_ticker not in ["mCELL", "CELL"]:
+                continue
+            if wallet_address not in wallet_totals:
+                wallet_totals[wallet_address] = {}
+            wallet_totals[wallet_address][token_ticker] = wallet_totals[wallet_address].get(token_ticker, 0) + amount
+        result = [
+            {
+                "Wallet address": wallet_address,
+                "Balances": [
+                    {"Token": token, "Amount": amount}
+                    for token, amount in wallet_totals[wallet_address].items()
+                ]
+            }
+            for wallet_address in wallet_totals
+        ]
+        return result
+    else:
+        return None

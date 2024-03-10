@@ -66,5 +66,4 @@ def fetch_all_node_info():
     cursor.close()
     conn.close()
     if rows:
-        print(rows)
         return rows
