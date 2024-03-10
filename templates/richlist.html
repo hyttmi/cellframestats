@@ -22,27 +22,30 @@
         <div class="row row-stats info">
             <div class="col-sm-12">
                 <h2 class="text-uppercase text-color-1">Richlist</h2>
-                <div id="wallets">s</div>
+                <div id="wallets"></div>
                 <script>
-                    //sample data
                     var tabledata = [
                     {% for wallet in wallets_info %}
                     {
                         wallet: "{{ wallet['Wallet address'] }}",
-                        cell: "{% for balance in wallet['Balances'] %}{% if balance['Token'] == 'CELL' %}{{ balance['Amount'] / 1e18|round(9) }}{% endif %}{% endfor %}",
-                        mcell: "{% for balance in wallet['Balances'] %}{% if balance['Token'] == 'mCELL' %}{{ balance['Amount'] / 1e18|round(9) }}{% endif %}{% endfor %}"
+                        cell: "{% for balance in wallet['Balances'] %}{% if balance['Token'] == 'CELL'  and balance['Amount'] != 0 %}{{ balance['Amount'] / 1e18|round(9) }}{% endif %}{% endfor %}",
+                        mcell: "{% for balance in wallet['Balances'] %}{% if balance['Token'] == 'mCELL'  and balance['Amount'] != 0 %}{{ balance['Amount'] / 1e18|round(9) }}{% endif %}{% endfor %}"
                     },
                     {% endfor %}
 	                ];
 
                     var table = new Tabulator("#wallets", {
+                        responsiveLayout:"hide",
                         data: tabledata,
                         layout: "fitColumns",
                         columns: [
-                            { title: "Name", field: "wallet", sorter: "string", width: 150 },
+                            { title: "Wallet", field: "wallet", sorter: "string", width: 200 },
                             { title: "CELL", field: "cell", sorter: "number", hozAlign: "left" },
-                            { title: "mCELL", field: "mcell", sorter: "string", headerSort: false },
+                            { title: "mCELL", field: "mcell", sorter: "number" },
                         ],
+                        classNames: {
+        table: "table table-dark"
+    }
                     });
                 </script>
             </div>
