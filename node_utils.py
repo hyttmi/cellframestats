@@ -34,7 +34,6 @@ def fetch_all_activated_wallets():
 def fetch_all_wallets_info():
     list_all_wallets = sendCommand("ledger list balance -net Backbone")
     pattern = re.compile(r"Ledger balance key: (\w+).+token_ticker:(\w+).+balance:(\d+)")
-    print("here")
     matches = pattern.findall(list_all_wallets)
     if matches:
         wallet_totals = {}
