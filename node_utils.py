@@ -61,3 +61,15 @@ def fetch_all_wallets_info():
         return result
     else:
         return None
+
+def fetch_top_100_wallets(token):
+    all_wallets_info = fetch_all_wallets_info()
+    
+    wallets = [
+        {"Wallet address": wallet["Wallet address"], f"{token} balance": sum(balance["Amount"] for balance in wallet["Balances"] if balance["Token"] == f"{token}")}
+        for wallet in all_wallets_info
+    ]
+    
+    sorted_wallets = sorted(wallets, key=lambda x: x[f"{token} balance"], reverse=True)
+    
+    return sorted_wallets[:50]

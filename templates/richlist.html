@@ -22,31 +22,52 @@
         <div class="row row-stats info">
             <div class="col-sm-12">
                 <h2 class="text-uppercase text-color-1">Richlist</h2>
-                <div id="wallets"></div>
-                <script>
-                    var tabledata = [
-                    {% for wallet in wallets_info %}
-                    {
-                        wallet: "{{ wallet['Wallet address'] }}",
-                        cell: "{% for balance in wallet['Balances'] %}{% if balance['Token'] == 'CELL'  and balance['Amount'] != 0 %}{{ balance['Amount'] / 1e18|round(9) }}{% endif %}{% endfor %}",
-                        mcell: "{% for balance in wallet['Balances'] %}{% if balance['Token'] == 'mCELL'  and balance['Amount'] != 0 %}{{ balance['Amount'] / 1e18|round(9) }}{% endif %}{% endfor %}"
-                    },
-                    {% endfor %}
-	                ];
-
-                    var table = new Tabulator("#wallets", {
-                        responsiveLayout:"hide",
-                        data: tabledata,
-                        layout: "fitColumns",
-                        pagination:true,
-                        paginationSize:15,
-                        columns: [
-                            { title: "Wallet", field: "wallet", sorter: "string", width: 200 },
-                            { title: "CELL", field: "cell", sorter: "number", hozAlign: "left" },
-                            { title: "mCELL", field: "mcell", sorter: "number" },
-                        ],
-                    });
-                </script>
+                <h5 class="heading-small">Top 50 wallets by cell tokens</h5>
+                <table class="table table-dark table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Wallet Address</th>
+                            <th>CELL Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set rank = namespace(value=1) %}
+                        {% for wallet in wallets_info_top_100_cell %}
+                            <tr>
+                                <td>{{ rank.value }}</td>
+                                <td>{{ wallet['Wallet address'] [0:50] }}</td>
+                                <td>{{ wallet['CELL balance'] / 1e18|round(9) }}</td>
+                            </tr>
+                            {% set rank.value = rank.value + 1 %}
+                        {% endfor %}
+                    </tbody>
+                </table>            
+            </div>
+        </div>
+        <div class="row row-stats info">
+            <div class="col-sm-12">
+                <h5 class="heading-small">Top 50 wallets by mcell tokens</h5>
+                <table class="table table-dark table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Wallet Address</th>
+                            <th>mCELL Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set rank = namespace(value=1) %}
+                        {% for wallet in wallets_info_top_100_mcell %}
+                            <tr>
+                                <td>{{ rank.value }}</td>
+                                <td>{{ wallet['Wallet address'] [0:50] }}</td>
+                                <td>{{ wallet['mCELL balance'] / 1e18|round(9) }}</td>
+                            </tr>
+                            {% set rank.value = rank.value + 1 %}
+                        {% endfor %}
+                    </tbody>
+                </table>            
             </div>
         </div>
     </div>

@@ -146,3 +146,17 @@ footer {
     min-height: 600px;
     height: 100%;
 }
+
+.heading-small {
+    text-transform: uppercase;
+    color: #119eaa;
+}
+
+.table {
+    background-color: transparent; /* Set the background color of the table to transparent */
+}
+
+.table th,
+.table td {
+    background-color: transparent; /* Set the background color of table cells to transparent */
+}
