@@ -146,8 +146,3 @@ footer {
     min-height: 600px;
     height: 100%;
 }
-
-.tabulator + * {
-    background-color: black;
-    color: white; /* Optional: Set text color to white */
-}
