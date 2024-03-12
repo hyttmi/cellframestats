@@ -123,15 +123,30 @@ def fetch_all_wallets_info():
     print("Updating wallets database...")
     conn = create_connection("databases/wallets.db")
     cursor = conn.cursor()
+    
     cursor.execute('''CREATE TABLE IF NOT EXISTS wallets (
                     wallet_address TEXT PRIMARY KEY,
                     token_ticker TEXT,
                     balance TEXT
                 )''')
+    
+    cursor.execute('''CREATE TABLE IF NOT EXISTS wallets_temp (
+                    wallet_address TEXT PRIMARY KEY,
+                    token_ticker TEXT,
+                    balance TEXT
+                )''')
+    cursor.execute('''CREATE TABLE IF NOT EXISTS wallets_old (
+                    wallet_address TEXT PRIMARY KEY,
+                    token_ticker TEXT,
+                    balance TEXT
+                )''')
+    
     conn.commit()
+    
     list_all_wallets = nu.sendCommand("ledger list balance -net Backbone")
     pattern = re.compile(r"Ledger balance key: (\w+).+token_ticker:(\w+).+balance:(\d+)")
     matches = pattern.findall(list_all_wallets)
+    
     if matches:
         for match in matches:
             wallet_address = match[0]
@@ -139,12 +154,20 @@ def fetch_all_wallets_info():
             amount = match[2]
             if wallet_address == "null":
                 continue
-            cursor.execute("INSERT OR IGNORE INTO wallets (wallet_address, token_ticker, balance) VALUES (?, ?, ?)", (wallet_address, token_ticker, amount))
+            cursor.execute("INSERT OR IGNORE INTO wallets_temp (wallet_address, token_ticker, balance) VALUES (?, ?, ?)", (wallet_address, token_ticker, amount))
         conn.commit()
-        conn.close()
+    
+        cursor.execute("DROP TABLE IF EXISTS wallets_old")
+    
+        cursor.execute("ALTER TABLE wallets RENAME TO wallets_old")
+        
+        cursor.execute("ALTER TABLE wallets_temp RENAME TO wallets")
+        
         print("Update process for wallets done!")
     else:
-        return None
+        print("No wallets found.")
+    
+    conn.close()
 
 if __name__ == "__main__":
     tx_thread = threading.Thread(target=update_transactions)
