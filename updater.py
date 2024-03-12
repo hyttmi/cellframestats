@@ -5,6 +5,15 @@ import re
 from datetime import datetime
 import threading
 
+def create_connection(db_file): #make connection to the database and return con object or none.
+    con = None
+    try:
+        con = sqlite3.connect(db_file)
+        return con
+    except Exception as e:
+        print(e)
+    return con
+
 def every_5_minutes(func):
     def wrapper(*args, **kwargs):
         while True:
@@ -26,7 +35,7 @@ def every_1_minute(func):
     return wrapper
 
 def create_tables(db_name):
-    conn = sqlite3.connect(f"databases/{db_name}.db")
+    conn = create_connection(f"databases/{db_name}.db")
     c = conn.cursor()
     c.execute(f'''CREATE TABLE IF NOT EXISTS {db_name}_temp
                  (hash TEXT PRIMARY KEY, timestamp TEXT)''')
@@ -35,15 +44,15 @@ def create_tables(db_name):
     conn.commit()
     conn.close()
 
-def insert_data(db_name, hash, timestamp):
-    conn = sqlite3.connect(f"databases/{db_name}.db")
+def insert_data(db_name, hash, timestamp=False):
+    conn = create_connection(f"databases/{db_name}.db")
     c = conn.cursor()
     c.execute(f"INSERT INTO {db_name}_temp (hash, timestamp) VALUES (?, ?)", (hash, timestamp))
     conn.commit()
     conn.close()
 
 def data_exists(db_name, hash):
-    conn = sqlite3.connect(f"databases/{db_name}.db")
+    conn = create_connection(f"databases/{db_name}.db")
     c = conn.cursor()
     c.execute(f"SELECT 1 FROM {db_name} WHERE hash=?", (hash,))
     result = c.fetchone() is not None
@@ -81,7 +90,7 @@ def fetch_and_insert_transactions():
         print("Failed to update transactions database!")
 
 def copy_to_main_table(db_name):
-    conn = sqlite3.connect(f"databases/{db_name}.db")
+    conn = create_connection(f"databases/{db_name}.db")
     c = conn.cursor()
     c.execute(f"DELETE FROM {db_name}")
     c.execute(f"INSERT INTO {db_name} SELECT * FROM {db_name}_temp")
@@ -109,12 +118,43 @@ def update_transactions():
         print(f"An error occurred while updating transactions: {e}")
         return
 
+@every_1_minute
+def fetch_all_wallets_info():
+    print("Updating wallets database...")
+    conn = create_connection("databases/wallets.db")
+    cursor = conn.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS wallets (
+                    wallet_address TEXT PRIMARY KEY,
+                    token_ticker TEXT,
+                    balance TEXT
+                )''')
+    conn.commit()
+    list_all_wallets = nu.sendCommand("ledger list balance -net Backbone")
+    pattern = re.compile(r"Ledger balance key: (\w+).+token_ticker:(\w+).+balance:(\d+)")
+    matches = pattern.findall(list_all_wallets)
+    if matches:
+        for match in matches:
+            wallet_address = match[0]
+            token_ticker = match[1]
+            amount = match[2]
+            if wallet_address == "null":
+                continue
+            cursor.execute("INSERT OR IGNORE INTO wallets (wallet_address, token_ticker, balance) VALUES (?, ?, ?)", (wallet_address, token_ticker, amount))
+        conn.commit()
+        conn.close()
+        print("Update process for wallets done!")
+    else:
+        return None
+
 if __name__ == "__main__":
     tx_thread = threading.Thread(target=update_transactions)
     blocks_thread = threading.Thread(target=update_blocks)
+    wallets_thread = threading.Thread(target=fetch_all_wallets_info)
     
     tx_thread.start()
     blocks_thread.start()
+    wallets_thread.start()
     
     tx_thread.join()
     blocks_thread.join()
+    wallets_thread.join()

@@ -149,14 +149,65 @@ footer {
 
 .heading-small {
     text-transform: uppercase;
-    color: #119eaa;
+    color: #1bb6c4;
 }
 
 .table {
-    background-color: transparent; /* Set the background color of the table to transparent */
+    background-color: transparent;
+    font-size: 0.8rem;
 }
 
 .table th,
 .table td {
-    background-color: transparent; /* Set the background color of table cells to transparent */
+    background-color: transparent;
+}
+
+.wallet-input {
+    background: #1bb6c4;
+    margin-top: 40px;
+    border-radius: 10px;
+    color: #FFFFFF;
+    width: 90%;
+}
+
+.wallet {
+    background: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 80%;
+}
+
+.wallet:focus {
+    background: #FFFFFF;
+    border: none;
+    box-shadow: none;
+    color: #131313
+}
+
+.btn-custom {
+    background: #1bb6c4;
+    border: none;
+    padding: 11px;
+    border-radius: 8px;
+    margin-left: 5px;
+}
+
+.btn-custom:hover {
+    background: #119eaa;
+    border: none;
+}
+
+.btn-custom:active {
+    background: #119eaa;
+    border: none;
+}
+
+.result {
+    margin-top: 15px;
+    min-height: 30px;
+}
+
+.navbar-collapse {
+    z-index: 1;
 }

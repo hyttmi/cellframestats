@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 
 import node_utils as nu
 import database_utils as du
+import common as co
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -29,11 +30,15 @@ async def read_stats(request: Request):
 @app.get("/nodes", response_class=HTMLResponse)
 async def read_stats(request: Request):
     return templates.TemplateResponse("nodes.html", {"request": request, "active_page": "nodes",
-                                                     "node_info": du.fetch_all_node_info(),
-                                                     "wallets_info": nu.fetch_all_wallets_info()})
+                                                     "node_info": du.fetch_all_node_info()})
 
 @app.get("/richlist", response_class=HTMLResponse)
 async def read_stats(request: Request):
     return templates.TemplateResponse("richlist.html", {"request": request, "active_page": "richlist",
-                                                     "wallets_info_top_cell": nu.fetch_top_wallets("CELL",50),
-                                                     "wallets_info_top_mcell": nu.fetch_top_wallets("mCELL",50)})
+                                                     "wallets_info_top_cell": du.fetch_top_wallets("CELL",50),
+                                                     "wallets_info_top_mcell": du.fetch_top_wallets("mCELL",50)})
+
+@app.post("/submit")
+async def submit_form(wallet: str = Form(...)):
+    msg = co.validate_input(wallet)
+    return msg
