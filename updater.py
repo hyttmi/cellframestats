@@ -4,7 +4,6 @@ import sqlite3
 import re
 from datetime import datetime
 import threading
-import chardet
 
 def create_connection(db_file): #make connection to the database and return con object or none.
     con = None
