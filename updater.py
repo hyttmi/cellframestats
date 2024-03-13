@@ -4,6 +4,7 @@ import sqlite3
 import re
 from datetime import datetime
 import threading
+import chardet
 
 def create_connection(db_file): #make connection to the database and return con object or none.
     con = None
@@ -77,7 +78,7 @@ def fetch_and_insert_blocks():
 def fetch_and_insert_transactions():
     cmd_output = nu.sendCommand("ledger tx -all -net Backbone")
     transactions = []
-    pattern = re.findall(r"transaction:.*hash (0x[A-Z0-9].*)\s+TS Created: (.*)", cmd_output)
+    pattern = re.findall(r"\s+Datum_tx_hash: (0x.{64})\s+TS_Created: (.*)", cmd_output)
     if pattern:
         for hashes, timestamp in pattern:
             original_datetime = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y")
@@ -144,7 +145,7 @@ def fetch_all_wallets_info():
     conn.commit()
     
     list_all_wallets = nu.sendCommand("ledger list balance -net Backbone")
-    pattern = re.compile(r"Ledger balance key: (\w+).+token_ticker:(\w+).+balance:(\d+)", re.MULTILINE)
+    pattern = re.compile(r"\s+Ledger balance key:\s+(\w+).*\s+token_ticker: (\w+)\s+balance: (\d+)")
     matches = pattern.findall(list_all_wallets)
     
     if matches:
