@@ -144,7 +144,7 @@ def fetch_all_wallets_info():
     conn.commit()
     
     list_all_wallets = nu.sendCommand("ledger list balance -net Backbone")
-    pattern = re.compile(r"Ledger balance key: (\w+).+token_ticker:(\w+).+balance:(\d+)")
+    pattern = re.compile(r"Ledger balance key: (\w+).+token_ticker:(\w+).+balance:(\d+)", re.MULTILINE)
     matches = pattern.findall(list_all_wallets)
     
     if matches:
