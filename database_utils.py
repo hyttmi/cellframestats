@@ -91,3 +91,15 @@ def fetch_all_activated_wallets():
         return len(rows)
     else:
         return None
+    
+def fetch_all_active_nodes():
+    conn = create_connection("databases/cellframe.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM all_node_names")
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    if rows:
+        return(len(rows))
+    else:
+        return None

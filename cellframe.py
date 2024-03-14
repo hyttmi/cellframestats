@@ -14,7 +14,7 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "active_page": "home",
-                                                     "active_nodes": nu.fetch_active_nodes(),
+                                                     "active_nodes": du.fetch_all_active_nodes(),
                                                      "main_blocks": du.fetch_blocks_on_main(),
                                                      "active_wallets": du.fetch_all_activated_wallets(),
                                                      "all_transactions": du.fetch_all_transactions(),
