@@ -16,7 +16,7 @@ async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "active_page": "home",
                                                      "active_nodes": nu.fetch_active_nodes(),
                                                      "main_blocks": du.fetch_blocks_on_main(),
-                                                     "active_wallets": nu.fetch_all_activated_wallets(),
+                                                     "active_wallets": du.fetch_all_activated_wallets(),
                                                      "all_transactions": du.fetch_all_transactions(),
                                                      "all_stakes": du.fetch_all_staked_tokens()})
 

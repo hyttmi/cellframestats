@@ -79,3 +79,15 @@ def fetch_top_wallets(token, amount):
         return rows
     else:
         return None
+    
+def fetch_all_activated_wallets():
+    conn = create_connection("databases/wallets.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT wallet_address FROM wallets")
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    if rows:
+        return len(rows)
+    else:
+        return None

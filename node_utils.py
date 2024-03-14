@@ -1,10 +1,6 @@
 import subprocess
 import re
 
-import subprocess
-
-import subprocess
-
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"
     try:
@@ -14,16 +10,8 @@ def sendCommand(command):
         if process.returncode != 0:
             raise subprocess.CalledProcessError(process.returncode, full_command, output=output, stderr=error)
         
-        # Attempt to decode the output, ignoring decoding errors
         result = output.decode('utf-8', errors='ignore').strip()
         return result
-    except subprocess.CalledProcessError as e:
-        print(f"Command '{full_command}' failed with return code {e.returncode}")
-        print("Standard output:")
-        print(e.output)
-        print("Standard error:")
-        print(e.stderr)
-        return f"Error: Command '{full_command}' failed with return code {e.returncode}"
     except Exception as e:
         print(f"Exception occurred while executing command: {e}")
         return f"Error: {e}"

@@ -73,6 +73,21 @@ def fetch_and_insert_blocks():
         copy_to_main_table("blocks")
     else:
         print("Failed to update blocks database!")
+        
+def fetch_and_insert_masternodes():
+    cmd_output = nu.sendCommand("block list -net Backbone -chain main")
+    blocks = []
+    pattern = re.findall(r"(0x[A-Z0-9]{64}): ts_create=(.*)", cmd_output)
+    if pattern:
+        for hashes, timestamp in pattern:
+            original_datetime = datetime.strptime(timestamp, "%a, %d %b %Y %H:%M:%S %z")
+            iso8601 = original_datetime.isoformat()
+            if not data_exists("blocks", hashes):
+                insert_data("blocks", hashes, iso8601)
+                blocks.append({"hash": hashes, "timestamp": iso8601})
+        copy_to_main_table("blocks")
+    else:
+        print("Failed to update blocks database!")
 
 def fetch_and_insert_transactions():
     cmd_output = nu.sendCommand("ledger tx -all -net Backbone")
@@ -118,7 +133,7 @@ def update_transactions():
         print(f"An error occurred while updating transactions: {e}")
         return
 
-@every_1_minute
+@every_5_minutes
 def fetch_all_wallets_info():
     print("Updating wallets database...")
     conn = create_connection("databases/wallets.db")
@@ -134,13 +149,7 @@ def fetch_all_wallets_info():
                     wallet_address TEXT PRIMARY KEY,
                     token_ticker TEXT,
                     balance TEXT
-                )''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS wallets_old (
-                    wallet_address TEXT PRIMARY KEY,
-                    token_ticker TEXT,
-                    balance TEXT
-                )''')
-    
+                )''')    
     conn.commit()
     
     list_all_wallets = nu.sendCommand("ledger list balance -net Backbone")
@@ -155,14 +164,11 @@ def fetch_all_wallets_info():
             if wallet_address == "null":
                 continue
             cursor.execute("INSERT OR IGNORE INTO wallets_temp (wallet_address, token_ticker, balance) VALUES (?, ?, ?)", (wallet_address, token_ticker, amount))
+            
         conn.commit()
-    
-        cursor.execute("DROP TABLE IF EXISTS wallets_old")
-    
-        cursor.execute("ALTER TABLE wallets RENAME TO wallets_old")
         
+        cursor.execute("DROP TABLE IF EXISTS wallets")
         cursor.execute("ALTER TABLE wallets_temp RENAME TO wallets")
-        
         print("Update process for wallets done!")
     else:
         print("No wallets found.")

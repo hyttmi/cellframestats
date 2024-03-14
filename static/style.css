@@ -211,3 +211,7 @@ footer {
 .navbar-collapse {
     z-index: 1;
 }
+
+.table {
+    --bs-table-hover-bg: #1bb6c4;
+}
