@@ -73,21 +73,6 @@ def fetch_and_insert_blocks():
         copy_to_main_table("blocks")
     else:
         print("Failed to update blocks database!")
-        
-def fetch_and_insert_masternodes():
-    cmd_output = nu.sendCommand("block list -net Backbone -chain main")
-    blocks = []
-    pattern = re.findall(r"(0x[A-Z0-9]{64}): ts_create=(.*)", cmd_output)
-    if pattern:
-        for hashes, timestamp in pattern:
-            original_datetime = datetime.strptime(timestamp, "%a, %d %b %Y %H:%M:%S %z")
-            iso8601 = original_datetime.isoformat()
-            if not data_exists("blocks", hashes):
-                insert_data("blocks", hashes, iso8601)
-                blocks.append({"hash": hashes, "timestamp": iso8601})
-        copy_to_main_table("blocks")
-    else:
-        print("Failed to update blocks database!")
 
 def fetch_and_insert_transactions():
     cmd_output = nu.sendCommand("ledger tx -all -net Backbone")
