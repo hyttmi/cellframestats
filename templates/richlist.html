@@ -23,7 +23,7 @@
             <h1 class="row-stats row-stats-heading text-uppercase text-center display-6 mx-auto">Insert wallet address
                 or amount</h1>
             <form id="walletForm">
-                <input type="text" class="wallet mx-auto" id="walletInput" name="wallet">
+                <input type="text" class="wallet mx-auto" id="walletInput" name="wallet"><br><br>
                 <button type="button" onclick="fetchWalletData()" class="btn-custom">Check</button>
             </form>
             <div id="result" class="result"></div>
@@ -127,7 +127,7 @@
                         document.getElementById("result").innerHTML = `<span class="response">${data.message}</span>`;
                     }
                     else if (walletAddress == "" || walletAddress == null) {  // Empty wallet address?
-                        document.getElementById("result").innerHTML = `<span class="error response">You forgot your wallet address?</span>`;
+                        document.getElementById("result").innerHTML = `<span class="error response">Please input your wallet address or amount!</span>`;
                     }
                     else {
                         console.error('Error:', xhr.statusText);

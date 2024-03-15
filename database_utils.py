@@ -103,3 +103,4 @@ def fetch_all_active_nodes():
         return(len(rows))
     else:
         return None
+        

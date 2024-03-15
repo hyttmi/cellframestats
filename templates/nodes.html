@@ -19,9 +19,7 @@
         </div>
     </nav>
 
-    <div class="container">
-
-        <div id="map"></div>
+        <div id="map" class="mx-auto"></div>
 
         <script>
             var root = am5.Root.new("map");
@@ -108,15 +106,12 @@
                 });
             });
 
-
-            // Set data
             var cities = [
                 {% for point in node_info %}
             {
                 title: "<strong>Node address:</strong> {{point[1]}}<br><strong>Country:</strong> {{point[16]}}<br><strong>Staked amount: </strong>{{point[6]}} mCELL<br><strong>Weight:</strong> {{ " % .2f"|format(point[7]) }}%",
-                    test: "test",
-                        latitude: "{{point[13]}}",
-                            longitude: "{{point[14]}}"
+                latitude: "{{point[13]}}",
+                longitude: "{{point[14]}}"
             }
             {% if not loop.last %}, {% endif %}
             {% endfor %}
@@ -136,33 +131,9 @@
 
             chart.appear(4000, 100);
         </script>
+    <div class="container-flex">
+    {% include "footer.html" %}
     </div>
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-3 info text-uppercase">
-                    <h3 class="footer-heading ">Cellframe links</h3>
-                    <p class="footer-link-text"><a class="link" target="_blank" href="https://cellframe.net">Cellframe
-                            website</a></p>
-                    <p class="footer-link-text"><a class="link" target="_blank"
-                            href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
-                    <p class="footer-link-text"><a class="link" target="_blank"
-                            href="https://gitlab.demlabs.net/cellframe">Cellframe Gitlab</a></p>
-                </div>
-                <div class="col-sm-3 info  text-uppercase">
-                    <h3 class="footer-heading">Contact us</h3>
-                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@Tradernoob76"><i
-                                class="fa-brands fa-telegram"></i>
-                            Tradernoob76</a></p>
-                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@CELLgainz"> <i
-                                class="fa-brands fa-telegram"></i>
-                            CELLgainz</a></p>
-                </div>
-                <p class="text-center">This site is not affiliated in any way with Demlabs (company) or it's projects
-                    (e.g. Cellframe)</p>
-            </div>
-        </div>
-    </footer>
 </body>
 
 </html>
