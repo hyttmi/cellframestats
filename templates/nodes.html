@@ -3,6 +3,22 @@
 {% include "head.html" %}
 
 <body>
+  <div class="modal fade" id="nodeModal" tabindex="-1" aria-labelledby="nodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="nodeModalLabel"></h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="node-info">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
     <div class="container">
         <div class="row mx-auto"><img class="logo flex-d mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
         </div>
@@ -18,17 +34,18 @@
             </div>
         </div>
     </nav>
+    
 
         <div id="map" class="mx-auto"></div>
 
         <script>
             var root = am5.Root.new("map");
             root._logo.dispose();
-
+        
             root.setThemes([
                 am5themes_Animated.new(root)
             ]);
-
+        
             var chart = root.container.children.push(
                 am5map.MapChart.new(root, {
                     panX: "rotateX",
@@ -36,45 +53,45 @@
                     projection: am5map.geoMercator(),
                 })
             );
-
+        
             var polygonSeries = chart.series.push(
                 am5map.MapPolygonSeries.new(root, {
                     geoJSON: am5geodata_worldLow,
                     exclude: ["AQ"]
                 })
             );
-
+        
             polygonSeries.mapPolygons.template.setAll({
                 fill: am5.color(0x119eaa)
             });
-
+        
             var pointSeries = chart.series.push(am5map.ClusteredPointSeries.new(root, {}));
-
+        
             pointSeries.set("clusteredBullet", function (root) {
                 var container = am5.Container.new(root, {
                     cursorOverStyle: "pointer"
                 });
-
+        
                 var circle1 = container.children.push(am5.Circle.new(root, {
                     radius: 8,
                     tooltipY: 0,
                     fill: am5.color(0xff8c00)
                 }));
-
+        
                 var circle2 = container.children.push(am5.Circle.new(root, {
                     radius: 12,
                     fillOpacity: 0.3,
                     tooltipY: 0,
                     fill: am5.color(0xff8c00)
                 }));
-
+        
                 var circle3 = container.children.push(am5.Circle.new(root, {
                     radius: 16,
                     fillOpacity: 0.3,
                     tooltipY: 0,
                     fill: am5.color(0xff8c00)
                 }));
-
+        
                 var label = container.children.push(am5.Label.new(root, {
                     centerX: am5.p50,
                     centerY: am5.p50,
@@ -83,54 +100,110 @@
                     fontSize: "8",
                     text: "{value}"
                 }));
-
+        
                 container.events.on("click", function (e) {
                     pointSeries.zoomToCluster(e.target.dataItem);
                 });
-
+        
                 return am5.Bullet.new(root, {
                     sprite: container
                 });
             });
-
+        
             pointSeries.bullets.push(function () {
                 var circle = am5.Circle.new(root, {
                     radius: 6,
                     tooltipY: -10,
                     fill: am5.color(0xff8c00),
-                    tooltipHTML: "{title}"
+                    tooltipHTML: "<strong>Node address:</strong> {address}<br><strong>Country:</strong> {country}<br><strong>Staked amount:</strong> {staked_amount} mCELL<br><strong>Weight:</strong> {weight}%<br><br>{title}"
                 });
+        
+                circle.events.on("click", function(ev) {
+                var modal = new bootstrap.Modal(document.getElementById('nodeModal'));
+                
+                modal.show();
 
+                var dataItem = ev.target.dataItem.dataContext;
+                var address = dataItem.address;
+
+                var xhr = new XMLHttpRequest();
+
+                xhr.open('GET', '/node_info?address=' + address);
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var jsonResponse = JSON.parse(xhr.responseText);
+                        var nodeInfoDiv = document.getElementById('node-info');
+                        var modal_head = document.getElementById('nodeModalLabel');
+                        modal_head.innerHTML = `${jsonResponse.address}`
+                        nodeInfoDiv.innerHTML = `
+                            <table class="table table-dark table-hover">
+                                <tr>
+                                    <td><strong>Stake value:</strong></td><td>${jsonResponse.stake_value} mCELL</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total blocks:</strong></td><td>${jsonResponse.total_blocks}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Node version:</strong></td><td>${jsonResponse.node_version}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Alias:</strong></td><td>${jsonResponse.alias}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>All time rewards:</strong></td><td>${jsonResponse.all_time_rewards} CELL</td>
+                                </tr>
+                            </table>
+                        `;
+                    } else {
+                        console.error('Request failed. Status code: ' + xhr.status);
+                    }
+                };
+            
+                xhr.send();
+            });
+        
                 return am5.Bullet.new(root, {
                     sprite: circle
                 });
+        
             });
-
+        
             var cities = [
                 {% for point in node_info %}
-            {
-                title: "<strong>Node address:</strong> {{point[1]}}<br><strong>Country:</strong> {{point[16]}}<br><strong>Staked amount: </strong>{{point[6]}} mCELL<br><strong>Weight:</strong> {{ " % .2f"|format(point[7]) }}%",
-                latitude: "{{point[13]}}",
-                longitude: "{{point[14]}}"
-            }
-            {% if not loop.last %}, {% endif %}
-            {% endfor %}
+                {
+                    title: "Click for more info",
+                    latitude: "{{point[13]}}",
+                    longitude: "{{point[14]}}",
+                    link: "/node_info?{{point[1]}}",
+                    address: "{{point[1]}}",
+                    country: "{{point[16]}}",
+                    staked_amount: "{{point[6]}}",
+                    weight: "{{ " % .2f"|format(point[7]) }}"
+                }
+                {% if not loop.last %}, {% endif %}
+                {% endfor %}
             ];
-
+        
             for (var i = 0; i < cities.length; i++) {
                 var city = cities[i];
-                addCity(city.longitude, city.latitude, city.title);
+                addCity(city.longitude, city.latitude, city.title, city.link, city.address, city.country, city.staked_amount, city.weight);
             }
-
-            function addCity(longitude, latitude, title) {
+        
+            function addCity(longitude, latitude, title, link, address, country, staked_amount, weight) {
                 pointSeries.data.push({
                     geometry: { type: "Point", coordinates: [longitude, latitude] },
-                    title: title
+                    title: title,
+                    link: link,
+                    address: address,
+                    country: country,
+                    staked_amount: staked_amount,
+                    weight: weight
                 });
             }
-
-            chart.appear(4000, 100);
         </script>
+        
+        
     <div class="container-flex">
     {% include "footer.html" %}
     </div>

@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from markupsafe import Markup
 
 import node_utils as nu
 import database_utils as du
@@ -42,3 +43,11 @@ async def read_stats(request: Request):
 async def submit_form(wallet: str = Form(...)):
     msg = co.validate_input(wallet)
     return msg
+
+@app.get("/node_info")
+async def get_node_info(address: str):
+    result = du.fetch_node_info_by_addr(address)
+    if result:
+        return result
+    else:
+        return {"error": "Node not found"}

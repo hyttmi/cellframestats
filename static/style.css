@@ -215,3 +215,18 @@ footer {
     --bs-table-hover-bg: #1bb6c4;
     --bs-table-hover-color: #131313;
 }
+
+.node-link {
+    color: #131313;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.node-link:hover {
+    text-decoration: underline;
+}
+
+.modal-content {
+    background-color: #131313 !important;
+    border: none;
+}

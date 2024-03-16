@@ -86,32 +86,7 @@
             </div>
         </div>
     </div>
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-3 info text-uppercase">
-                    <h3 class="footer-heading ">Cellframe links</h3>
-                    <p class="footer-link-text"><a class="link" target="_blank" href="https://cellframe.net">Cellframe
-                            website</a></p>
-                    <p class="footer-link-text"><a class="link" target="_blank"
-                            href="https://explorer.cellframe.net/">Cellframe explorer</a></p>
-                    <p class="footer-link-text"><a class="link" target="_blank"
-                            href="https://gitlab.demlabs.net/cellframe">Cellframe Gitlab</a></p>
-                </div>
-                <div class="col-sm-3 info  text-uppercase">
-                    <h3 class="footer-heading">Contact us</h3>
-                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@Tradernoob76"><i
-                                class="fa-brands fa-telegram"></i>
-                            Tradernoob76</a></p>
-                    <p class="footer-link-text"><a class="link" target="_blank" href="t.me/@CELLgainz"> <i
-                                class="fa-brands fa-telegram"></i>
-                            CELLgainz</a></p>
-                </div>
-                <p class="text-center">This site is not affiliated in any way with Demlabs (company) or it's projects
-                    (e.g. Cellframe)</p>
-            </div>
-        </div>
-    </footer>
+    {% include "footer.html" %}
     <script>
         function fetchWalletData() {
             var walletAddress = document.getElementById("walletInput").value;
