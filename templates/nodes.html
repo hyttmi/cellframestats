@@ -115,7 +115,7 @@
                     radius: 6,
                     tooltipY: -10,
                     fill: am5.color(0xff8c00),
-                    tooltipHTML: "<strong>Node address:</strong> {address}<br><strong>Country:</strong> {country}<br><br>{title}"
+                    tooltipHTML: "<strong>Node address:</strong> {address}<br><strong>Country:</strong> {country}<br><br><strong>{title}</strong>"
                 });
         
                 circle.events.on("click", function(ev) {
@@ -136,13 +136,24 @@
                         var nodeInfoDiv = document.getElementById('node-info');
                         var modal_head = document.getElementById('nodeModalLabel');
                         modal_head.innerHTML = `${jsonResponse.address}`
+                        const date = new Date(`${jsonResponse.first_block_signed}`)
                         nodeInfoDiv.innerHTML = `
+                        <div class="table-responsive">
                             <table class="table table-dark table-hover">
+                                <tr>
+                                    <td><strong>PKey hash:</strong></td><td>${jsonResponse.pkey_hash}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>First block signed:</strong></td><td>` + new Intl.DateTimeFormat().format(date) + `</td>
+                                </tr>
                                 <tr>
                                     <td><strong>Stake value:</strong></td><td>${jsonResponse.stake_value} mCELL</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Total blocks:</strong></td><td>${jsonResponse.total_blocks}</td>
+                                    <td><strong>First signed blocks today:</strong></td><td>${jsonResponse.blocks_today}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>First signed blocks total:</strong></td><td>${jsonResponse.total_blocks}</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Node version:</strong></td><td>${jsonResponse.node_version}</td>
@@ -151,9 +162,19 @@
                                     <td><strong>Alias:</strong></td><td>${jsonResponse.alias}</td>
                                 </tr>
                                 <tr>
+                                    <td><strong>Daily rewards:</strong></td><td>${jsonResponse.daily_rewards} CELL</td>
+                                </tr>
+                                <tr>
                                     <td><strong>All time rewards:</strong></td><td>${jsonResponse.all_time_rewards} CELL</td>
                                 </tr>
+                                <tr>
+                                    <td><strong>Signatures today:</strong></td><td>${jsonResponse.signatures_today} CELL</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Signatures all time:</strong></td><td>${jsonResponse.signatures_all} CELL</td>
+                                </tr>
                             </table>
+                        </div>
                         `;
                     } else {
                         console.error('Request failed. Status code: ' + xhr.status);

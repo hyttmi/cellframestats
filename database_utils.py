@@ -110,32 +110,33 @@ def fetch_node_info_by_addr(addr):
     addr_change = addr.replace("::","")
     addr_change = f"N{addr_change}"
     
-    cursor.execute(f"SELECT all_time_signatures FROM {addr_change} ORDER BY all_time_signatures DESC LIMIT 1;")
-    total_blocks_row = cursor.fetchone()
+    cursor.execute(f"SELECT * FROM {addr_change} ORDER BY ID ASC LIMIT 1;")
+    basic_data = cursor.fetchone()
     
-    cursor.execute(f"SELECT * FROM {addr_change} ORDER BY all_time_signatures DESC LIMIT 1;")
-    latest_block_info = cursor.fetchone()
+    cursor.execute(f"SELECT * FROM {addr_change} ORDER BY ID DESC LIMIT 1;")
+    latest_data = cursor.fetchone()
     
-    cursor.execute(f"SELECT all_time_rewards FROM {addr_change} ORDER BY ID desc LIMIT 1;")
+    cursor.execute(f"SELECT all_time_rewards FROM {addr_change} ORDER BY ID DESC LIMIT 1;")
     all_time_rewards = cursor.fetchone()
     
-    cursor.execute(f"SELECT node_version FROM {addr_change} ORDER BY ID asc LIMIT 1;")
-    node_version = cursor.fetchone()
-    
-    cursor.execute(f"SELECT alias FROM {addr_change} ORDER BY ID asc LIMIT 1;")
-    alias = cursor.fetchone()
-    
-    cursor.execute(f"SELECT stake_value FROM {addr_change} ORDER BY ID desc LIMIT 1;")
+    cursor.execute(f"SELECT stake_value FROM {addr_change} ORDER BY ID DESC LIMIT 1;")
     stake_value = cursor.fetchone()
+    
+    formatted_date = datetime.strptime(basic_data[1], "%d.%m.%Y").isoformat()
 
     results = {
         "address": addr,
-        "total_blocks": total_blocks_row[0] if total_blocks_row else "N/A",
-        "latest_block_info": latest_block_info,
+        "first_block_signed": formatted_date,
+        "blocks_today": latest_data[2],
+        "total_blocks": latest_data[3],
         "all_time_rewards": all_time_rewards[0] if all_time_rewards else "N/A",
-        "node_version": node_version[0],
-        "alias": alias[0] if alias[0] else "N/A",
-        "stake_value": stake_value[0]
+        "daily_rewards": latest_data[11],
+        "node_version": basic_data[8],
+        "alias": basic_data[15] if basic_data[15] else "N/A",
+        "stake_value": stake_value[0],
+        "pkey_hash": basic_data[7],
+        "signatures_today": latest_data[9],
+        "signatures_all": latest_data[10]
     }
-    
+    print(latest_data)
     return results
