@@ -115,7 +115,7 @@
                     radius: 6,
                     tooltipY: -10,
                     fill: am5.color(0xff8c00),
-                    tooltipHTML: "<strong>Node address:</strong> {address}<br><strong>Country:</strong> {country}<br><strong>Staked amount:</strong> {staked_amount} mCELL<br><strong>Weight:</strong> {weight}%<br><br>{title}"
+                    tooltipHTML: "<strong>Node address:</strong> {address}<br><strong>Country:</strong> {country}<br><br>{title}"
                 });
         
                 circle.events.on("click", function(ev) {
@@ -177,9 +177,7 @@
                     longitude: "{{point[14]}}",
                     link: "/node_info?{{point[1]}}",
                     address: "{{point[1]}}",
-                    country: "{{point[16]}}",
-                    staked_amount: "{{point[6]}}",
-                    weight: "{{ " % .2f"|format(point[7]) }}"
+                    country: "{{point[16]}}"
                 }
                 {% if not loop.last %}, {% endif %}
                 {% endfor %}
@@ -187,18 +185,16 @@
         
             for (var i = 0; i < cities.length; i++) {
                 var city = cities[i];
-                addCity(city.longitude, city.latitude, city.title, city.link, city.address, city.country, city.staked_amount, city.weight);
+                addCity(city.longitude, city.latitude, city.title, city.link, city.address, city.country);
             }
         
-            function addCity(longitude, latitude, title, link, address, country, staked_amount, weight) {
+            function addCity(longitude, latitude, title, link, address, country) {
                 pointSeries.data.push({
                     geometry: { type: "Point", coordinates: [longitude, latitude] },
                     title: title,
                     link: link,
                     address: address,
                     country: country,
-                    staked_amount: staked_amount,
-                    weight: weight
                 });
             }
         </script>
