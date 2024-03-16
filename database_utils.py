@@ -138,5 +138,4 @@ def fetch_node_info_by_addr(addr):
         "signatures_today": latest_data[9],
         "signatures_all": latest_data[10]
     }
-    print(latest_data)
     return results
