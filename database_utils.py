@@ -58,22 +58,22 @@ def chart_daily_blocks(num_days):
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day
 
-def chart_daily_transactions():
+def chart_daily_transactions(num_days):
     con = create_connection("databases/transactions.db")
     counts_per_day = {}
-    previous_day = datetime.now() - timedelta(days=1)
-    date_to_fetch = previous_day.strftime('%Y-%m-%d')
-
-    cursor = con.cursor()
-    cursor.execute("SELECT COUNT(*), DATE(timestamp) FROM transactions WHERE DATE(timestamp) = ? GROUP BY DATE(timestamp)", (date_to_fetch,))
-    result = cursor.fetchone()
-    if result:
-        counts_per_day[date_to_fetch] = result[0]
-    else:
-        counts_per_day[date_to_fetch] = 0
-    cursor.close() 
+    for i in range(num_days):
+        date_to_fetch = datetime.now() - timedelta(days=i)
+        date_str = date_to_fetch.strftime('%Y-%m-%d')
+        cursor = con.cursor()
+        cursor.execute("SELECT COUNT(*), DATE(timestamp) FROM transactions WHERE DATE(timestamp) = ? GROUP BY DATE(timestamp)", (date_str,))
+        result = cursor.fetchone()
+        if result:
+            counts_per_day[date_str] = result[0]
+        else:
+            counts_per_day[date_str] = 0
+        cursor.close() 
     con.close()
-
+    counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     print(counts_per_day)
     return counts_per_day
 
