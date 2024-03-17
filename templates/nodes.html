@@ -119,70 +119,68 @@
                 });
         
                 circle.events.on("click", function(ev) {
-                var modal = new bootstrap.Modal(document.getElementById('nodeModal'));
-                
-                modal.show();
-
-                var dataItem = ev.target.dataItem.dataContext;
-                var address = dataItem.address;
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', '/node_info?address=' + address);
-
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        var jsonResponse = JSON.parse(xhr.responseText);
-                        var nodeInfoDiv = document.getElementById('node-info');
-                        var modal_head = document.getElementById('nodeModalLabel');
-                        modal_head.innerHTML = `${jsonResponse.address}`
-                        const date = new Date(`${jsonResponse.first_block_signed}`)
-                        nodeInfoDiv.innerHTML = `
-                        <div class="table-responsive">
-                            <table class="table table-dark table-hover">
-                                <tr>
-                                    <td><strong>PKey hash:</strong></td><td>${jsonResponse.pkey_hash}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>First block signed:</strong></td><td>` + new Intl.DateTimeFormat().format(date) + `</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Stake value:</strong></td><td>${jsonResponse.stake_value} mCELL</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>First signed blocks today:</strong></td><td>${jsonResponse.blocks_today}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>First signed blocks total:</strong></td><td>${jsonResponse.total_blocks}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Node version:</strong></td><td>${jsonResponse.node_version}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Alias:</strong></td><td>${jsonResponse.alias}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Daily rewards:</strong></td><td>${jsonResponse.daily_rewards} CELL</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>All time rewards:</strong></td><td>${jsonResponse.all_time_rewards} CELL</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Signatures today:</strong></td><td>${jsonResponse.signatures_today} CELL</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Signatures all time:</strong></td><td>${jsonResponse.signatures_all} CELL</td>
-                                </tr>
-                            </table>
-                        </div>
-                        `;
-                    } else {
-                        console.error('Request failed. Status code: ' + xhr.status);
+                    if (ev.target.dataItem) {
+                        var dataItem = ev.target.dataItem.dataContext;
+                        var masternode = dataItem.isValidator;
+                        if (masternode) {
+                            var modal = new bootstrap.Modal(document.getElementById('nodeModal'));
+                            modal.show();
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('GET', '/node_info?address=' + dataItem.address);
+                            xhr.onload = function() {
+                                if (xhr.status === 200) {
+                                    var jsonResponse = JSON.parse(xhr.responseText);
+                                    var nodeInfoDiv = document.getElementById('node-info');
+                                    var modal_head = document.getElementById('nodeModalLabel');
+                                    modal_head.innerHTML = `${jsonResponse.address}`;
+                                    const date = new Date(`${jsonResponse.first_block_signed}`);
+                                    nodeInfoDiv.innerHTML = `
+                                        <div class="table-responsive">
+                                            <table class="table table-dark table-hover">
+                                                <tr>
+                                                    <td><strong>PKey hash:</strong></td><td>${jsonResponse.pkey_hash}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>First block signed:</strong></td><td>` + new Intl.DateTimeFormat().format(date) + `</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Stake value:</strong></td><td>${jsonResponse.stake_value} mCELL</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>First signed blocks today:</strong></td><td>${jsonResponse.blocks_today}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>First signed blocks total:</strong></td><td>${jsonResponse.total_blocks}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Node version:</strong></td><td>${jsonResponse.node_version}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Alias:</strong></td><td>${jsonResponse.alias}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Daily rewards:</strong></td><td>${jsonResponse.daily_rewards} CELL</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>All time rewards:</strong></td><td>${jsonResponse.all_time_rewards} CELL</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Signatures today:</strong></td><td>${jsonResponse.signatures_today}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Signatures all time:</strong></td><td>${jsonResponse.signatures_all}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    `;
+                                } else {
+                                    console.error('Request failed. Status code: ' + xhr.status);
+                                }
+                            };
+                            xhr.send();
+                        }
                     }
-                };
-            
-                xhr.send();
-            });
+                });
         
                 return am5.Bullet.new(root, {
                     sprite: circle
@@ -193,32 +191,56 @@
             var cities = [
                 {% for point in node_info %}
                 {
-                    title: "Click for more info",
+                    title: "Click point for more info",
                     latitude: "{{point[13]}}",
                     longitude: "{{point[14]}}",
                     link: "/node_info?{{point[1]}}",
                     address: "{{point[1]}}",
-                    country: "{{point[16]}}"
+                    country: "{{point[16]}}",
+                    isValidator: true
                 }
                 {% if not loop.last %}, {% endif %}
                 {% endfor %}
             ];
         
-            for (var i = 0; i < cities.length; i++) {
-                var city = cities[i];
-                addCity(city.longitude, city.latitude, city.title, city.link, city.address, city.country);
-            }
+            var nonValidators = [
+            {% for point in nonvalidators %}
+                {% if point[3] and point[4] and point[5] %}
+                    {
+                        title: "Non-validator node",
+                        latitude: "{{ point[3] }}",
+                        longitude: "{{ point[4] }}",
+                        address: "{{ point[1] }}",
+                        country: "{{ point[5] }}",
+                        isValidator: false
+                    }
+                    {% if not loop.last %}, {% endif %}
+                {% endif %}
+            {% endfor %}
+        ];
         
-            function addCity(longitude, latitude, title, link, address, country) {
-                pointSeries.data.push({
-                    geometry: { type: "Point", coordinates: [longitude, latitude] },
-                    title: title,
-                    link: link,
-                    address: address,
-                    country: country,
-                });
-            }
+        for (var i = 0; i < cities.length; i++) {
+            var city = cities[i];
+            addCity(city.longitude, city.latitude, city.title, city.link, city.address, city.country, city.isValidator);
+        }
+
+        for (var i = 0; i < nonValidators.length; i++) {
+            var nonValidator = nonValidators[i];
+            addCity(nonValidator.longitude, nonValidator.latitude, nonValidator.title, "", nonValidator.address, nonValidator.country, nonValidator.isValidator);
+        }
+        
+            function addCity(longitude, latitude, title, link, address, country, isValidator) {
+            pointSeries.data.push({
+                geometry: { type: "Point", coordinates: [longitude, latitude] },
+                title: title,
+                link: link,
+                address: address,
+                country: country,
+                isValidator: isValidator
+            });
+        }
         </script>
+               
         
         
     <div class="container-flex">
