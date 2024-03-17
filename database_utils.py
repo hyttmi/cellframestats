@@ -74,7 +74,6 @@ def chart_daily_transactions(num_days):
         cursor.close() 
     con.close()
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
-    print(counts_per_day)
     return counts_per_day
 
 def fetch_all_node_info():
