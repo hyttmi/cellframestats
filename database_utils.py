@@ -58,6 +58,25 @@ def chart_daily_blocks(num_days):
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day
 
+def chart_daily_transactions():
+    con = create_connection("databases/transactions.db")
+    counts_per_day = {}
+    previous_day = datetime.now() - timedelta(days=1)
+    date_to_fetch = previous_day.strftime('%Y-%m-%d')
+
+    cursor = con.cursor()
+    cursor.execute("SELECT COUNT(*), DATE(timestamp) FROM transactions WHERE DATE(timestamp) = ? GROUP BY DATE(timestamp)", (date_to_fetch,))
+    result = cursor.fetchone()
+    if result:
+        counts_per_day[date_to_fetch] = result[0]
+    else:
+        counts_per_day[date_to_fetch] = 0
+    cursor.close() 
+    con.close()
+
+    print(counts_per_day)
+    return counts_per_day
+
 def fetch_all_node_info():
     conn = create_connection("databases/cellframe.db")
     cursor = conn.cursor()
@@ -71,7 +90,7 @@ def fetch_all_node_info():
 def fetch_top_wallets(token, amount):
     conn = create_connection("databases/wallets.db")
     cursor = conn.cursor()
-    cursor.execute(f"SELECT wallet_address, token_ticker, balance FROM wallets WHERE token_ticker = '{token}' ORDER BY CAST(balance AS NUMERIC) DESC LIMIT {amount}")
+    cursor.execute(f"SELECT wallet_address, token_ticker, balance FROM cf20 WHERE token_ticker = '{token}' ORDER BY CAST(balance AS NUMERIC) DESC LIMIT {amount}")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -83,7 +102,7 @@ def fetch_top_wallets(token, amount):
 def fetch_all_activated_wallets():
     conn = create_connection("databases/wallets.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT DISTINCT wallet_address FROM wallets")
+    cursor.execute("SELECT DISTINCT wallet_address FROM cf20")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()

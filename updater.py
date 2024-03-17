@@ -1,18 +1,11 @@
 import time
 import node_utils as nu
+import database_utils as du
 import sqlite3
 import re
 from datetime import datetime
 import threading
-
-def create_connection(db_file): #make connection to the database and return con object or none.
-    con = None
-    try:
-        con = sqlite3.connect(db_file)
-        return con
-    except Exception as e:
-        print(e)
-    return con
+import csv
 
 def every_5_minutes(func):
     def wrapper(*args, **kwargs):
@@ -35,7 +28,7 @@ def every_1_minute(func):
     return wrapper
 
 def create_tables(db_name):
-    conn = create_connection(f"databases/{db_name}.db")
+    conn = du.create_connection(f"databases/{db_name}.db")
     c = conn.cursor()
     c.execute(f'''CREATE TABLE IF NOT EXISTS {db_name}_temp
                  (hash TEXT PRIMARY KEY, timestamp TEXT)''')
@@ -45,14 +38,14 @@ def create_tables(db_name):
     conn.close()
 
 def insert_data(db_name, hash, timestamp=False):
-    conn = create_connection(f"databases/{db_name}.db")
+    conn = du.create_connection(f"databases/{db_name}.db")
     c = conn.cursor()
     c.execute(f"INSERT INTO {db_name}_temp (hash, timestamp) VALUES (?, ?)", (hash, timestamp))
     conn.commit()
     conn.close()
 
 def data_exists(db_name, hash):
-    conn = create_connection(f"databases/{db_name}.db")
+    conn = du.create_connection(f"databases/{db_name}.db")
     c = conn.cursor()
     c.execute(f"SELECT 1 FROM {db_name} WHERE hash=?", (hash,))
     result = c.fetchone() is not None
@@ -90,7 +83,7 @@ def fetch_and_insert_transactions():
         print("Failed to update transactions database!")
 
 def copy_to_main_table(db_name):
-    conn = create_connection(f"databases/{db_name}.db")
+    conn = du.create_connection(f"databases/{db_name}.db")
     c = conn.cursor()
     c.execute(f"DELETE FROM {db_name}")
     c.execute(f"INSERT INTO {db_name} SELECT * FROM {db_name}_temp")
@@ -119,19 +112,21 @@ def update_transactions():
         return
 
 @every_5_minutes
-def fetch_all_wallets_info():
+def fetch_cf20_wallets_info():
     print("Updating wallets database...")
-    conn = create_connection("databases/wallets.db")
+    conn = du.create_connection("databases/wallets.db")
     cursor = conn.cursor()
     
-    cursor.execute('''CREATE TABLE IF NOT EXISTS wallets (
-                    wallet_address TEXT PRIMARY KEY,
+    cursor.execute('''CREATE TABLE IF NOT EXISTS cf20 (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    wallet_address TEXT,
                     token_ticker TEXT,
                     balance TEXT
                 )''')
     
-    cursor.execute('''CREATE TABLE IF NOT EXISTS wallets_temp (
-                    wallet_address TEXT PRIMARY KEY,
+    cursor.execute('''CREATE TABLE IF NOT EXISTS cf20_temp (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    wallet_address TEXT,
                     token_ticker TEXT,
                     balance TEXT
                 )''')    
@@ -148,12 +143,12 @@ def fetch_all_wallets_info():
             amount = match[2]
             if wallet_address == "null":
                 continue
-            cursor.execute("INSERT OR IGNORE INTO wallets_temp (wallet_address, token_ticker, balance) VALUES (?, ?, ?)", (wallet_address, token_ticker, amount))
+            cursor.execute("INSERT INTO cf20_temp (wallet_address, token_ticker, balance) VALUES (?, ?, ?)", (wallet_address, token_ticker, amount))
             
         conn.commit()
         
-        cursor.execute("DROP TABLE IF EXISTS wallets")
-        cursor.execute("ALTER TABLE wallets_temp RENAME TO wallets")
+        cursor.execute("DROP TABLE IF EXISTS cf20")
+        cursor.execute("ALTER TABLE cf20_temp RENAME TO cf20")
         print("Update process for wallets done!")
     else:
         print("No wallets found.")
@@ -163,7 +158,7 @@ def fetch_all_wallets_info():
 if __name__ == "__main__":
     tx_thread = threading.Thread(target=update_transactions)
     blocks_thread = threading.Thread(target=update_blocks)
-    wallets_thread = threading.Thread(target=fetch_all_wallets_info)
+    wallets_thread = threading.Thread(target=fetch_cf20_wallets_info)
     
     tx_thread.start()
     blocks_thread.start()

@@ -20,7 +20,7 @@
     </nav>
     <div class="container main-content shadow-lg">
         <div class="row row-stats info">
-            <h2 class="text-uppercase text-color-1">Backbone charts</h2>
+            <h2 class="text-uppercase text-color-1">Backbone block info</h2>
             <div class="col-sm-6">
                 <canvas id="chart_blocks_7_days"></canvas>
             </div>
@@ -33,11 +33,25 @@
                 <canvas id="chart_blocks_120_days"></canvas>
             </div>
         </div>
+        <div class="row row-stats info">
+            <h2 class="text-uppercase text-color-1">Backbone transactions info</h2>
+            <div class="col-sm-6">
+                <canvas id="chart_transactions_7_days"></canvas>
+            </div>
+            <div class="col-sm-6">
+                <canvas id="chart_transactions_30_days"></canvas>
+            </div>
+        </div>
+        <div class="row row-stats info">
+            <div class="col-sm-12">
+                <canvas id="chart_transactions_120_days"></canvas>
+            </div>
+        </div>
     </div>
     {% include "footer.html" %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        function createChart(ctxId, data, options, period, type) {
+        function createChart(ctxId, data, options, which, period, type) {
             const ctx = document.getElementById(ctxId);
             const labels = Object.keys(data).map(dateString => {
                 const date = new Date(dateString);
@@ -45,7 +59,7 @@
             });
 
             const dataset = {
-                label: `Daily blocks / ${period} days`,
+                label: `Daily ${which} / ${period} days`,
                 data: Object.values(data),
                 backgroundColor: '#1bb6c4',
                 borderColor: '#1bb6c4',
@@ -65,6 +79,10 @@
         const latest_7_blocks = {{ latest_7_blocks | safe }};
         const latest_30_blocks = {{ latest_30_blocks | safe }};
         const latest_120_blocks = {{ latest_120_blocks | safe }};
+        
+        const latest_7_transactions = {{ latest_7_transactions | safe }};
+        const latest_30_transactions = {{ latest_30_transactions | safe }};
+        const latest_120_transactions = {{ latest_120_transactions | safe }};
 
         const options = {
             plugins: {
@@ -96,9 +114,12 @@
             }
         };
 
-        createChart('chart_blocks_7_days', latest_7_blocks, options, 7, "bar");
-        createChart('chart_blocks_30_days', latest_30_blocks, options, 30, "bar");
-        createChart('chart_blocks_120_days', latest_120_blocks, options, 120, "line");
+        createChart('chart_blocks_7_days', latest_7_blocks, options, "Blocks", 7, "bar");
+        createChart('chart_blocks_30_days', latest_30_blocks, options, "Blocks", 30, "bar");
+        createChart('chart_blocks_120_days', latest_120_blocks, options, "Blocks", 120, "line");
+        createChart('chart_transactions_7_days', latest_7_transactions, options, "Transactions", 7, "bar");
+        createChart('chart_transactions_30_days', latest_30_transactions, options, "Transactions", 30, "bar");
+        createChart('chart_transactions_120_days', latest_120_transactions, options, "Transactions", 120, "line");
     </script>
 
 </body>

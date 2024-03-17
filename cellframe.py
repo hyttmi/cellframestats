@@ -25,7 +25,10 @@ async def read_stats(request: Request):
     return templates.TemplateResponse("stats.html", {"request": request, "active_page": "stats",
                                                      "latest_7_blocks": du.chart_daily_blocks(7),
                                                      "latest_30_blocks": du.chart_daily_blocks(30),
-                                                     "latest_120_blocks": du.chart_daily_blocks(120)})
+                                                     "latest_120_blocks": du.chart_daily_blocks(120),
+                                                     "latest_7_transactions": du.chart_daily_transactions(7),
+                                                     "latest_30_transactions": du.chart_daily_transactions(30),
+                                                     "latest_120_transactions": du.chart_daily_transactions(120)})
 
 @app.get("/nodes", response_class=HTMLResponse)
 async def read_stats(request: Request):
