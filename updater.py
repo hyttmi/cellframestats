@@ -5,7 +5,6 @@ import sqlite3
 import re
 from datetime import datetime
 import threading
-import csv
 
 def every_5_minutes(func):
     def wrapper(*args, **kwargs):
