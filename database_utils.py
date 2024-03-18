@@ -94,8 +94,6 @@ def fetch_all_non_validator_info():
     cursor.close()
     conn.close()
     if rows:
-        for row in rows:
-            print(row)
         return rows
     
 def fetch_top_wallets(token, amount):
