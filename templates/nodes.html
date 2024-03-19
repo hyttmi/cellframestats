@@ -188,7 +188,7 @@
         
             });
         
-            var cities = [
+            var Validators = [
                 {% for point in node_info %}
                 {
                     title: "Click point for more info",
@@ -219,17 +219,17 @@
             {% endfor %}
         ];
         
-        for (var i = 0; i < cities.length; i++) {
-            var city = cities[i];
-            addCity(city.longitude, city.latitude, city.title, city.link, city.address, city.country, city.isValidator);
+        for (var i = 0; i < Validators.length; i++) {
+            var validator = Validators[i];
+            addNode(validator.longitude, validator.latitude, validator.title, validator.link, validator.address, validator.country, validator.isValidator);
         }
 
         for (var i = 0; i < nonValidators.length; i++) {
             var nonValidator = nonValidators[i];
-            addCity(nonValidator.longitude, nonValidator.latitude, nonValidator.title, "", nonValidator.address, nonValidator.country, nonValidator.isValidator);
+            addNode(nonValidator.longitude, nonValidator.latitude, nonValidator.title, "", nonValidator.address, nonValidator.country, nonValidator.isValidator);
         }
         
-            function addCity(longitude, latitude, title, link, address, country, isValidator) {
+            function addNode(longitude, latitude, title, link, address, country, isValidator) {
             pointSeries.data.push({
                 geometry: { type: "Point", coordinates: [longitude, latitude] },
                 title: title,

@@ -99,7 +99,7 @@ def fetch_all_non_validator_info():
 def fetch_top_wallets(token, amount):
     conn = create_connection("databases/wallets.db")
     cursor = conn.cursor()
-    cursor.execute(f"SELECT wallet_address, token_ticker, balance FROM cf20 WHERE token_ticker = '{token}' ORDER BY CAST(balance AS NUMERIC) DESC LIMIT {amount}")
+    cursor.execute(f"SELECT wallet_address, token_ticker, balance FROM cf20 WHERE token_ticker = '{token}' ORDER BY balance DESC LIMIT {amount}")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
