@@ -120,14 +120,14 @@ def fetch_cf20_wallets_info():
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     wallet_address TEXT,
                     token_ticker TEXT,
-                    balance TEXT
+                    balance REAL
                 )''')
     
     cursor.execute('''CREATE TABLE IF NOT EXISTS cf20_temp (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     wallet_address TEXT,
                     token_ticker TEXT,
-                    balance TEXT
+                    balance REAL
                 )''')    
     conn.commit()
     
