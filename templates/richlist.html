@@ -25,6 +25,19 @@
             <form id="walletForm">
                 <input type="text" class="wallet mx-auto" id="walletInput" name="wallet"><br><br>
                 <button type="button" onclick="fetchWalletData()" class="btn-custom">Check</button>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                      var form = document.getElementById("walletForm");
+                      var inputField = document.getElementById("walletInput");
+                
+                      form.addEventListener("submit", function(event) {
+                        // Prevent the default form submission
+                        event.preventDefault();
+                        // Clear the input field
+                        inputField.value = '';
+                      });
+                    });
+                  </script>
             </form>
             <div id="result" class="result"></div>
         </div>
@@ -112,6 +125,7 @@
             };
 
             xhr.send("wallet=" + encodeURIComponent(walletAddress));
+            document.getElementById("walletInput").value = '';
         }
     </script>
 </body>
