@@ -167,3 +167,16 @@ def fetch_node_info_by_addr(addr):
         "signatures_all": latest_data[10]
     }
     return results
+
+def check_cell_amount_by_wallet_addr(addr):
+    conn = create_connection("databases/wallets.db")
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM cf20 WHERE wallet_address IS '{addr}' AND token_ticker IS 'CELL'")
+    row = cursor.fetchone()
+    if row:
+        return float(row[3])
+    else:
+        return None
+        
+check_cell_amount_by_wallet_addr("Rj7J7MiX2bWy8sNyZ1ADLCPx7n79b5BymHZnFa74FnNJn4pqEuJBfSVXKB2t5MsDvcP9aeKiyRbBP1P9CGQs9usw6poyyeygEGrhmYGm")
+    

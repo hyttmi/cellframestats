@@ -6,6 +6,18 @@ import re
 from datetime import datetime
 import threading
 
+def every_new_day(func):
+    def wrapper(*args, **kwargs):
+        while True:
+            try:
+                current_time = datetime.datetime.now().time()
+                if current_time.hour == 0 and current_time.minute == 0:
+                    func(*args, **kwargs)
+            except Exception as e:
+                print(f"An error occurred: {e}")
+            time.sleep(60)
+    return wrapper
+
 def every_5_minutes(func):
     def wrapper(*args, **kwargs):
         while True:
