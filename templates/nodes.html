@@ -191,7 +191,7 @@
             var Validators = [
                 {% for point in node_info %}
                 {
-                    title: "Click point for more info",
+                    title: "Click for more info",
                     latitude: "{{point[13]}}",
                     longitude: "{{point[14]}}",
                     link: "/node_info?{{point[1]}}",
@@ -203,30 +203,9 @@
                 {% endfor %}
             ];
         
-            var nonValidators = [
-            {% for point in nonvalidators %}
-                {% if point[3] and point[4] and point[5] %}
-                    {
-                        title: "Non-validator node",
-                        latitude: "{{ point[3] }}",
-                        longitude: "{{ point[4] }}",
-                        address: "{{ point[1] }}",
-                        country: "{{ point[5] }}",
-                        isValidator: false
-                    }
-                    {% if not loop.last %}, {% endif %}
-                {% endif %}
-            {% endfor %}
-        ];
-        
         for (var i = 0; i < Validators.length; i++) {
             var validator = Validators[i];
             addNode(validator.longitude, validator.latitude, validator.title, validator.link, validator.address, validator.country, validator.isValidator);
-        }
-
-        for (var i = 0; i < nonValidators.length; i++) {
-            var nonValidator = nonValidators[i];
-            addNode(nonValidator.longitude, nonValidator.latitude, nonValidator.title, "", nonValidator.address, nonValidator.country, nonValidator.isValidator);
         }
         
             function addNode(longitude, latitude, title, link, address, country, isValidator) {
