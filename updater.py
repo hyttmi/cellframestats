@@ -42,9 +42,13 @@ def create_tables(db_name):
     conn = du.create_connection(f"databases/{db_name}.db")
     c = conn.cursor()
     c.execute(f'''CREATE TABLE IF NOT EXISTS {db_name}_temp
-                 (hash TEXT PRIMARY KEY, timestamp TEXT)''')
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 hash TEXT,
+                 timestamp DATE)''')
     c.execute(f'''CREATE TABLE IF NOT EXISTS {db_name}
-                 (hash TEXT PRIMARY KEY, timestamp TEXT)''')
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 hash TEXT,
+                 timestamp DATE)''')
     conn.commit()
     conn.close()
 
@@ -63,32 +67,26 @@ def data_exists(db_name, hash):
     conn.close()
     return result
 
-def fetch_and_insert_blocks():
-    cmd_output = nu.sendCommand("block list -net Backbone -chain main")
-    blocks = []
-    pattern = re.findall(r"(0x[A-Z0-9]{64}): ts_create=(.*)", cmd_output)
-    if pattern:
-        for hashes, timestamp in pattern:
-            original_datetime = datetime.strptime(timestamp, "%a, %d %b %Y %H:%M:%S %z")
-            iso8601 = original_datetime.isoformat()
+def insert_blocks_to_database():
+    blocks = nu.fetch_all_blocks_hash_and_timestamp()
+    if blocks is not None:
+        for block in blocks:
+            hashes = block["hash"]
+            timestamp = block["timestamp"]
             if not data_exists("blocks", hashes):
-                insert_data("blocks", hashes, iso8601)
-                blocks.append({"hash": hashes, "timestamp": iso8601})
+                insert_data("blocks", hashes, timestamp)
         copy_to_main_table("blocks")
     else:
         print("Failed to update blocks database!")
 
-def fetch_and_insert_transactions():
-    cmd_output = nu.sendCommand("ledger tx -all -net Backbone")
-    transactions = []
-    pattern = re.findall(r"\s+Datum_tx_hash: (0x.{64})\s+TS_Created: (.*)", cmd_output)
-    if pattern:
-        for hashes, timestamp in pattern:
-            original_datetime = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y")
-            iso8601 = original_datetime.isoformat()
+def insert_transactions_to_database():
+    transactions = nu.fetch_all_transactions_hash_and_timestamp()
+    if transactions is not None:
+        for transaction in transactions:
+            hashes = transaction["hash"]
+            timestamp = transaction["timestamp"]
             if not data_exists("transactions", hashes):
-                insert_data("transactions", hashes, iso8601)
-                transactions.append({"hash": hashes, "timestamp": iso8601})
+                insert_data("transactions", hashes, timestamp)
         copy_to_main_table("transactions")
     else:
         print("Failed to update transactions database!")
@@ -107,7 +105,7 @@ def update_blocks():
     print("Updating blocks database...")
     create_tables("blocks")
     try:
-        fetch_and_insert_blocks()
+        insert_blocks_to_database()
     except Exception as e:
         print(f"An error occurred while updating blocks: {e}")
         return
@@ -117,7 +115,7 @@ def update_transactions():
     print("Updating transactions database...")
     create_tables("transactions")
     try:
-        fetch_and_insert_transactions()
+        insert_transactions_to_database()
     except Exception as e:
         print(f"An error occurred while updating transactions: {e}")
         return

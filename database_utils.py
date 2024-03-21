@@ -177,6 +177,4 @@ def check_cell_amount_by_wallet_addr(addr):
         return float(row[3])
     else:
         return None
-        
-check_cell_amount_by_wallet_addr("Rj7J7MiX2bWy8sNyZ1ADLCPx7n79b5BymHZnFa74FnNJn4pqEuJBfSVXKB2t5MsDvcP9aeKiyRbBP1P9CGQs9usw6poyyeygEGrhmYGm")
     
