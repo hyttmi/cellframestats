@@ -86,16 +86,6 @@ def fetch_all_node_info():
     if rows:
         return rows
     
-def fetch_all_non_validator_info():
-    conn = create_connection("databases/cellframe.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM non_validators;")
-    rows = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    if rows:
-        return rows
-    
 def fetch_top_wallets(token, amount):
     conn = create_connection("databases/wallets.db")
     cursor = conn.cursor()
