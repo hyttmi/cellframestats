@@ -1,7 +1,6 @@
 import subprocess
 from datetime import datetime
 import re
-import json
 
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"
@@ -38,8 +37,22 @@ def fetch_all_transactions_hash_and_timestamp():
     if pattern:
         for hashes, timestamp in pattern:
             original_datetime = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y")
-            iso8601 = original_datetime.isoformat()
-            transactions.append({"hash": hashes, "timestamp": iso8601})
+            iso8601_timestamp = original_datetime.isoformat()
+            transactions.append({"hash": hashes, "timestamp": iso8601_timestamp})
         return transactions
+    else:
+        return None
+    
+def fetch_cf20_wallets_and_tokens():
+    list_all_wallets = sendCommand("ledger list balance -net Backbone")
+    matches = re.findall(r"\s+Ledger balance key:\s+(\w+).*\s+token_ticker: (\w+)\s+balance: (\d+)", list_all_wallets)
+    wallets = []
+    if matches:
+        for match in matches:
+            wallet_address = match[0]
+            token_ticker = match[1]
+            amount = match[2]
+            wallets.append({"wallet_address": wallet_address, "token_ticker": token_ticker, "amount": amount})
+        return wallets
     else:
         return None

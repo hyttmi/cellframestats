@@ -122,46 +122,35 @@ def update_transactions():
 
 @every_5_minutes
 def fetch_cf20_wallets_info():
+    wallets = nu.fetch_cf20_wallets_and_tokens()
     print("Updating wallets database...")
-    conn = du.create_connection("databases/wallets.db")
-    cursor = conn.cursor()
-    
-    cursor.execute('''CREATE TABLE IF NOT EXISTS cf20 (
+    if wallets is not None:
+        conn = du.create_connection("databases/wallets.db")
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS cf20 (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     wallet_address TEXT,
                     token_ticker TEXT,
                     balance REAL
                 )''')
-    
-    cursor.execute('''CREATE TABLE IF NOT EXISTS cf20_temp (
+        cursor.execute('''CREATE TABLE IF NOT EXISTS cf20_temp (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     wallet_address TEXT,
                     token_ticker TEXT,
                     balance REAL
                 )''')    
-    conn.commit()
-    
-    list_all_wallets = nu.sendCommand("ledger list balance -net Backbone")
-    pattern = re.compile(r"\s+Ledger balance key:\s+(\w+).*\s+token_ticker: (\w+)\s+balance: (\d+)")
-    matches = pattern.findall(list_all_wallets)
-    
-    if matches:
-        for match in matches:
-            wallet_address = match[0]
-            token_ticker = match[1]
-            amount = match[2]
-            if wallet_address == "null":
-                continue
-            cursor.execute("INSERT INTO cf20_temp (wallet_address, token_ticker, balance) VALUES (?, ?, ?)", (wallet_address, token_ticker, amount))
-            
         conn.commit()
-        
+        for wallet in wallets:
+            wallet_address = wallet["wallet_address"]
+            token_ticker = wallet["token_ticker"]
+            amount = wallet["amount"]
+            cursor.execute("INSERT INTO cf20_temp (wallet_address, token_ticker, balance) VALUES (?, ?, ?)", (wallet_address, token_ticker, amount))
+        conn.commit()
         cursor.execute("DROP TABLE IF EXISTS cf20")
         cursor.execute("ALTER TABLE cf20_temp RENAME TO cf20")
         print("Update process for wallets done!")
     else:
         print("No wallets found.")
-    
     conn.close()
 
 if __name__ == "__main__":
