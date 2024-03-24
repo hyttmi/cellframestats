@@ -1,6 +1,17 @@
 import subprocess
 from datetime import datetime
 import re
+import time
+
+def timer(fn):
+    def wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+        result = fn(*args, **kwargs)
+        end_time = time.perf_counter()
+        duration = (end_time - start_time)
+        print(f"  Took {duration:0.4f} s")
+        return result
+    return wrapper
 
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"
@@ -15,7 +26,7 @@ def sendCommand(command):
         return result
     except Exception as e:
         print(f"Exception occurred while executing command: {e}")
-        return f"Error: {e}"
+        return False
     
 def fetch_all_blocks_hash_and_timestamp():
     cmd_output = sendCommand("block list -net Backbone -chain main")
@@ -88,25 +99,32 @@ def fetch_all_stake_locks():
     else:
         return None
 
+@timer
 def current_stake_locks():
     stake_locks = fetch_all_stake_locks()
-    stakes = {}
-    for hash in stake_locks:
-        cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
-        matches = re.findall(r"Datum_tx_hash: (0x[0-9a-fA-F]+)\s+TS_Created: ([^\n]+).*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+)", cmd_output, re.DOTALL)
-        for match in matches:
-            tx_hash = match[0]
-            ts_created = datetime.strptime(match[1], "%a %b %d %H:%M:%S %Y").isoformat()
-            value = float(match[2])
-            srv_uid = match[3]
-            reinvest_percent = int(match[4]) / 10**18
-            time_unlock = datetime.utcfromtimestamp(int(match[5])).isoformat()
-            stake_info = {
-                "timestamp": ts_created,
-                "value": value,
-                "srv_uid": srv_uid,
-                "reinvest_percent": reinvest_percent,
-                "time_unlock": time_unlock
-            }
-            stakes[tx_hash] = stake_info
-    return stakes
+    if stake_locks is not None:
+        stakes = {}
+        for hash in stake_locks:
+            cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
+            matches = re.findall(r"Datum_tx_hash: (0x[0-9a-fA-F]+)\s+TS_Created: ([^\n]+).*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*?Wallet address: (^\n)", cmd_output, re.DOTALL)
+            for match in matches:
+                tx_hash = match[0]
+                ts_created = datetime.strptime(match[1], "%a %b %d %H:%M:%S %Y").isoformat()
+                value = float(match[2])
+                srv_uid = match[3]
+                reinvest_percent = int(match[4]) / 10**18
+                time_unlock = datetime.utcfromtimestamp(int(match[5])).isoformat()
+                wallet_address = match[6]
+                stake_info = {
+                    "timestamp": ts_created,
+                    "value": value,
+                    "srv_uid": srv_uid,
+                    "reinvest_percent": reinvest_percent,
+                    "time_unlock": time_unlock,
+                    "wallet_address": wallet_address
+                }
+                stakes[tx_hash] = stake_info
+        print(stakes)
+        return stakes
+    else:
+        return None
