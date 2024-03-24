@@ -56,3 +56,57 @@ def fetch_cf20_wallets_and_tokens():
         return wallets
     else:
         return None
+
+def fetch_all_stake_locks():
+    cmd_output = sendCommand("ledger tx -all -net Backbone")
+    if cmd_output:
+
+        locked = re.compile(r"Datum_tx_hash: (0x[0-9a-fA-F]+)(?:(?!Datum_tx_hash:).)*subtype: DAP_CHAIN_TX_OUT_COND_SUBTYPE_SRV_STAKE_LOCK", re.DOTALL)
+        released = re.compile(r"tx_prev_hash: (0x[0-9a-fA-F]+)")
+
+        locked_stakes = []
+        released_stakes = []
+
+        matches_locked = locked.findall(cmd_output)
+        if matches_locked:
+            for match in matches_locked:
+                locked_stakes.append(match)
+
+        matches_released = released.findall(cmd_output)
+        if matches_released:
+            for match in matches_released:
+                released_stakes.append(match)
+
+        locked_stakes_set = set(locked_stakes)
+        released_stakes_set = set(released_stakes)
+
+        locked_stakes_set -= released_stakes_set
+
+        locked_stakes_set = list(locked_stakes_set)
+
+        return locked_stakes_set
+    else:
+        return None
+
+def current_stake_locks():
+    stake_locks = fetch_all_stake_locks()
+    stakes = {}
+    for hash in stake_locks:
+        cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
+        matches = re.findall(r"Datum_tx_hash: (0x[0-9a-fA-F]+)\s+TS_Created: ([^\n]+).*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+)", cmd_output, re.DOTALL)
+        for match in matches:
+            tx_hash = match[0]
+            ts_created = datetime.strptime(match[1], "%a %b %d %H:%M:%S %Y").isoformat()
+            value = float(match[2])
+            srv_uid = match[3]
+            reinvest_percent = int(match[4]) / 10**18
+            time_unlock = datetime.utcfromtimestamp(int(match[5])).isoformat()
+            stake_info = {
+                "timestamp": ts_created,
+                "value": value,
+                "srv_uid": srv_uid,
+                "reinvest_percent": reinvest_percent,
+                "time_unlock": time_unlock
+            }
+            stakes[tx_hash] = stake_info
+    return stakes

@@ -18,25 +18,17 @@ def every_new_day(func):
             time.sleep(60)
     return wrapper
 
-def every_5_minutes(func):
-    def wrapper(*args, **kwargs):
-        while True:
-            try:
-                func(*args, **kwargs)
-            except Exception as e:
-                print(f"An error occurred: {e}")
-            time.sleep(5 * 60)
-    return wrapper
-
-def every_1_minute(func):
-    def wrapper(*args, **kwargs):
-        while True:
-            try:
-                func(*args, **kwargs)
-            except Exception as e:
-                print(f"An error occurred: {e}")
-            time.sleep(60)
-    return wrapper
+def every_x_minutes(x):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            while True:
+                try:
+                    func(*args, **kwargs)
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+                time.sleep(x * 60)
+        return wrapper
+    return decorator
 
 def create_tables(db_name):
     conn = du.create_connection(f"databases/{db_name}.db")
@@ -100,7 +92,7 @@ def copy_to_main_table(db_name):
     print(f"Update process for {db_name} done!")
     conn.close()
 
-@every_5_minutes
+@every_x_minutes(5)
 def update_blocks():
     print("Updating blocks database...")
     create_tables("blocks")
@@ -110,7 +102,7 @@ def update_blocks():
         print(f"An error occurred while updating blocks: {e}")
         return
     
-@every_1_minute
+@every_x_minutes(5)
 def update_transactions():
     print("Updating transactions database...")
     create_tables("transactions")
@@ -120,7 +112,7 @@ def update_transactions():
         print(f"An error occurred while updating transactions: {e}")
         return
 
-@every_5_minutes
+@every_x_minutes(5)
 def fetch_cf20_wallets_info():
     wallets = nu.fetch_cf20_wallets_and_tokens()
     print("Updating wallets database...")

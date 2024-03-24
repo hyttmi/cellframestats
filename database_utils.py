@@ -1,6 +1,8 @@
 import sqlite3
 import math
 from datetime import datetime, timedelta
+import node_utils as nu
+import re
 
 def create_connection(db_file): #make connection to the database and return con object or none.
     con = None
@@ -161,10 +163,9 @@ def fetch_node_info_by_addr(addr):
 def check_cell_amount_by_wallet_addr(addr):
     conn = create_connection("databases/wallets.db")
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM cf20 WHERE wallet_address IS '{addr}' AND token_ticker IS 'CELL'")
+    cursor.execute(f"SELECT * FROM cf20 WHERE wallet_address IS '{addr}' AND token_ticker IS 'CELL';")
     row = cursor.fetchone()
     if row:
         return float(row[3])
     else:
         return None
-    

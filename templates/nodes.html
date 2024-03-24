@@ -67,8 +67,8 @@
         
             var pointSeries = chart.series.push(am5map.ClusteredPointSeries.new(root, {}));
 
-            var zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
-            zoomControl.homeButton.set("visible", true);
+            /*var zoomControl = chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
+            zoomControl.homeButton.set("visible", true);*/
         
             pointSeries.set("clusteredBullet", function (root) {
                 var container = am5.Container.new(root, {
