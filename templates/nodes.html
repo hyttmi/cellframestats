@@ -123,7 +123,7 @@
                     tooltipHTML: "<strong>Node address:</strong> {address}<br><strong>Country:</strong> {country}<br><br><strong>{title}</strong>"
                 });
         
-                circle.events.on("dblclick", function(ev) {
+                circle.events.on("pointerdown", function(ev) {
                     if (ev.target.dataItem) {
                         var dataItem = ev.target.dataItem.dataContext;
                         var masternode = dataItem.isValidator;
