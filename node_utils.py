@@ -2,6 +2,7 @@ import subprocess
 from datetime import datetime
 import re
 import time
+import multiprocessing as mp
 
 def timer(fn):
     def wrapper(*args, **kwargs):
@@ -59,54 +60,49 @@ def fetch_cf20_wallets_and_tokens():
     matches = re.findall(r"\s+Ledger balance key:\s+(\w+).*\s+token_ticker: (\w+)\s+balance: (\d+)", list_all_wallets)
     wallets = []
     if matches:
+        
         for match in matches:
             wallet_address = match[0]
             token_ticker = match[1]
             amount = match[2]
             wallets.append({"wallet_address": wallet_address, "token_ticker": token_ticker, "amount": amount})
         return wallets
+    
     else:
         return None
 
 def fetch_all_stake_locks():
-    cmd_output = sendCommand("ledger tx -all -net Backbone")
-    if cmd_output:
-
-        locked = re.compile(r"Datum_tx_hash: (0x[0-9a-fA-F]+)(?:(?!Datum_tx_hash:).)*subtype: DAP_CHAIN_TX_OUT_COND_SUBTYPE_SRV_STAKE_LOCK", re.DOTALL)
-        released = re.compile(r"tx_prev_hash: (0x[0-9a-fA-F]+)")
-
-        locked_stakes = []
-        released_stakes = []
-
-        matches_locked = locked.findall(cmd_output)
-        if matches_locked:
-            for match in matches_locked:
-                locked_stakes.append(match)
-
-        matches_released = released.findall(cmd_output)
-        if matches_released:
-            for match in matches_released:
-                released_stakes.append(match)
-
-        locked_stakes_set = set(locked_stakes)
-        released_stakes_set = set(released_stakes)
-
-        locked_stakes_set -= released_stakes_set
-
-        locked_stakes_set = list(locked_stakes_set)
-
-        return locked_stakes_set
-    else:
-        return None
+    all_tx_output = sendCommand("ledger tx -all -net Backbone")
+    if all_tx_output:
+        hashes = re.findall(r"Datum_tx_hash: (0x[0-9a-fA-F]+)", all_tx_output) # Search all hashes
+        released = re.findall(r"tx_prev_hash: (0x[0-9a-fA-F]+)", all_tx_output) # Search all (apparently) returned hashes
+        stake_released = []
+        stake_locks = []
+        
+        if released:
+            for stakes in released:
+                stake_released.append(stakes)
+        with mp.Pool() as pool: # Send all hashes to pool to check if they are srv_stake locks
+            results = pool.map(fetch_stake_lock_by_hash, hashes)
+            for result in results:
+                if result:
+                    stake_locks.append(result)
+        
+        stake_locks_set = set(stake_locks)
+        stake_released_set =  set(stake_released)
+        stake_locks_set -= stake_released_set
+        
+        return list(stake_locks_set)
 
 @timer
 def current_stake_locks():
-    stake_locks = fetch_all_stake_locks()
-    if stake_locks is not None:
-        stakes = {}
-        for hash in stake_locks:
+    hashes = fetch_all_stake_locks()
+    stakes = {}
+    if hashes:
+        for hash in hashes:
             cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
-            matches = re.findall(r"Datum_tx_hash: (0x[0-9a-fA-F]+)\s+TS_Created: ([^\n]+).*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*?Wallet address: (^\n)", cmd_output, re.DOTALL)
+            matches = re.findall(r"Datum_tx_hash: (0x[0-9a-fA-F]+)\s+TS_Created: ([^\n]+).*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*Sender addr: ([^\n]+)", cmd_output, re.DOTALL)
+
             for match in matches:
                 tx_hash = match[0]
                 ts_created = datetime.strptime(match[1], "%a %b %d %H:%M:%S %Y").isoformat()
@@ -114,17 +110,24 @@ def current_stake_locks():
                 srv_uid = match[3]
                 reinvest_percent = int(match[4]) / 10**18
                 time_unlock = datetime.utcfromtimestamp(int(match[5])).isoformat()
-                wallet_address = match[6]
+                sender_addr = match[6]
                 stake_info = {
                     "timestamp": ts_created,
                     "value": value,
                     "srv_uid": srv_uid,
                     "reinvest_percent": reinvest_percent,
                     "time_unlock": time_unlock,
-                    "wallet_address": wallet_address
+                    "sender_addr": sender_addr
                 }
                 stakes[tx_hash] = stake_info
-        print(stakes)
         return stakes
     else:
         return None
+
+def fetch_stake_lock_by_hash(hash):
+    tx_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
+    if tx_output:
+        srv_stake_lock = re.search(r"subtype: DAP_CHAIN_TX_OUT_COND_SUBTYPE_SRV_STAKE_LOCK", tx_output)
+        if srv_stake_lock:
+            return hash
+    return None
