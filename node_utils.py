@@ -130,5 +130,3 @@ def fetch_stake_lock_by_hash(hash):
         if srv_stake_lock:
             return hash
     return None
-
-fetch_all_stake_locks()
