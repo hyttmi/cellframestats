@@ -71,6 +71,7 @@ def fetch_cf20_wallets_and_tokens():
     else:
         return None
 
+@timer
 def fetch_all_stake_locks():
     all_tx_output = sendCommand("ledger tx -all -net Backbone")
     if all_tx_output:
@@ -82,47 +83,45 @@ def fetch_all_stake_locks():
         if released:
             for stakes in released:
                 stake_released.append(stakes)
-        with mp.Pool() as pool: # Send all hashes to pool to check if they are srv_stake locks
-            results = pool.map(fetch_stake_lock_by_hash, hashes)
-            for result in results:
-                if result:
-                    stake_locks.append(result)
+                
+        if hashes:
+            with mp.Pool() as pool: # Send all hashes to pool to check if they are srv_stake locks
+                results_stake_locks = pool.map(fetch_stake_lock_by_hash, hashes)
+            for result_stake_lock in results_stake_locks:
+                if result_stake_lock:
+                    stake_locks.append(result_stake_lock)
         
         stake_locks_set = set(stake_locks)
-        stake_released_set =  set(stake_released)
+        stake_released_set = set(stake_released)
         stake_locks_set -= stake_released_set
-        
-        return list(stake_locks_set)
+        with mp.Pool() as pool:
+                result_current_stake_locks = pool.map(current_stake_locks, list(stake_locks_set))
+                if result_current_stake_locks:
+                    print(result_current_stake_locks)
 
-@timer
-def current_stake_locks():
-    hashes = fetch_all_stake_locks()
+def current_stake_locks(hash):
     stakes = {}
-    if hashes:
-        for hash in hashes:
-            cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
-            matches = re.findall(r"Datum_tx_hash: (0x[0-9a-fA-F]+)\s+TS_Created: ([^\n]+).*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*Sender addr: ([^\n]+)", cmd_output, re.DOTALL)
-
-            for match in matches:
-                tx_hash = match[0]
-                ts_created = datetime.strptime(match[1], "%a %b %d %H:%M:%S %Y").isoformat()
-                value = float(match[2])
-                srv_uid = match[3]
-                reinvest_percent = int(match[4]) / 10**18
-                time_unlock = datetime.utcfromtimestamp(int(match[5])).isoformat()
-                sender_addr = match[6]
-                stake_info = {
-                    "timestamp": ts_created,
-                    "value": value,
-                    "srv_uid": srv_uid,
-                    "reinvest_percent": reinvest_percent,
-                    "time_unlock": time_unlock,
-                    "sender_addr": sender_addr
-                }
-                stakes[tx_hash] = stake_info
+    cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
+    matches = re.findall(r"TS_Created: ([^\n]+).*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*Sender addr: ([^\n]+)", cmd_output, re.DOTALL)
+    if matches:
+        for match in matches:
+            tx_hash = hash
+            ts_created = datetime.strptime(match[0], "%a %b %d %H:%M:%S %Y").isoformat()
+            value = float(match[1])
+            srv_uid = match[2]
+            reinvest_percent = int(match[3]) / 10**18
+            time_unlock = datetime.utcfromtimestamp(int(match[4])).isoformat()
+            sender_addr = match[5]
+            stake_info = {
+                "timestamp": ts_created,
+                "value": value,
+                "srv_uid": srv_uid,
+                "reinvest_percent": reinvest_percent,
+                "time_unlock": time_unlock,
+                "sender_addr": sender_addr
+            }
+            stakes[tx_hash] = stake_info
         return stakes
-    else:
-        return None
 
 def fetch_stake_lock_by_hash(hash):
     tx_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
@@ -131,3 +130,5 @@ def fetch_stake_lock_by_hash(hash):
         if srv_stake_lock:
             return hash
     return None
+
+fetch_all_stake_locks()
