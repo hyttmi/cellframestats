@@ -71,7 +71,6 @@ def fetch_cf20_wallets_and_tokens():
     else:
         return None
 
-@timer
 def fetch_all_stake_locks():
     all_tx_output = sendCommand("ledger tx -all -net Backbone")
     if all_tx_output:
@@ -97,30 +96,32 @@ def fetch_all_stake_locks():
         with mp.Pool() as pool:
                 result_current_stake_locks = pool.map(current_stake_locks, list(stake_locks_set))
                 if result_current_stake_locks:
-                    print(result_current_stake_locks)
+                    return result_current_stake_locks
+                else:
+                    return None
 
 def current_stake_locks(hash):
-    stakes = {}
+    stakes = []
     cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
     matches = re.findall(r"TS_Created: ([^\n]+).*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*Sender addr: ([^\n]+)", cmd_output, re.DOTALL)
     if matches:
         for match in matches:
-            tx_hash = hash
             ts_created = datetime.strptime(match[0], "%a %b %d %H:%M:%S %Y").isoformat()
             value = float(match[1])
             srv_uid = match[2]
             reinvest_percent = int(match[3]) / 10**18
             time_unlock = datetime.utcfromtimestamp(int(match[4])).isoformat()
             sender_addr = match[5]
-            stake_info = {
-                "timestamp": ts_created,
-                "value": value,
-                "srv_uid": srv_uid,
-                "reinvest_percent": reinvest_percent,
-                "time_unlock": time_unlock,
-                "sender_addr": sender_addr
-            }
-            stakes[tx_hash] = stake_info
+            stake_info = (
+                hash,
+                ts_created,
+                value,
+                srv_uid,
+                reinvest_percent,
+                time_unlock,
+                sender_addr
+            )
+            stakes.append(stake_info)
         return stakes
 
 def fetch_stake_lock_by_hash(hash):

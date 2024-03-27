@@ -23,17 +23,14 @@ def fetch_all_transactions():
     return row
     
 def fetch_all_staked_tokens():
-    conn = create_connection("databases/cellframe.db")
+    conn = create_connection("databases/stakes.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT value FROM stakes;")
-    row = cursor.fetchall()
+    cursor.execute("SELECT SUM(value) AS total_value FROM stakes")
+    row = cursor.fetchone()[0]
     cursor.close()
     conn.close()
     if row:
-        values = []
-        for amount in row:
-            values.append(float(amount[0]))
-        return round(math.fsum(values))    
+        return row
     
 def fetch_blocks_on_main():
     conn = create_connection("databases/blocks.db")

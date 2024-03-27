@@ -113,7 +113,7 @@ def update_transactions():
         return
 
 @every_x_minutes(5)
-def fetch_cf20_wallets_info():
+def update_cf20_wallets_info():
     wallets = nu.fetch_cf20_wallets_and_tokens()
     print("Updating wallets database...")
     if wallets is not None:
@@ -144,16 +144,49 @@ def fetch_cf20_wallets_info():
     else:
         print("No wallets found.")
     conn.close()
+    
+@every_x_minutes(30)
+def update_stakes_info():
+    print("Updating stakes database...")
+    data = nu.fetch_all_stake_locks()
+
+    conn = du.create_connection("databases/stakes.db")
+    cursor = conn.cursor()
+    
+    cursor.execute('''CREATE TABLE IF NOT EXISTS stakes
+                      (tx_hash TEXT PRIMARY KEY, 
+                      ts_created DATE, 
+                      value REAL, 
+                      srv_uid TEXT, 
+                      reinvest_percent REAL, 
+                      time_unlock TEXT, 
+                      sender_addr TEXT)''')
+
+    if data is not None:
+        flat_data = [row[0] for row in data]
+        cursor.executemany('''INSERT OR IGNORE INTO stakes 
+                                  (tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr) 
+                                  VALUES (?, ?, ?, ?, ?, ?, ?)''', flat_data)
+        print("Update process for stakes done!")
+    else:
+        print("Failed to update stakes database!")
+
+    conn.commit()
+    conn.close()
+
 
 if __name__ == "__main__":
     tx_thread = threading.Thread(target=update_transactions)
     blocks_thread = threading.Thread(target=update_blocks)
-    wallets_thread = threading.Thread(target=fetch_cf20_wallets_info)
+    wallets_thread = threading.Thread(target=update_cf20_wallets_info)
+    stakes_thread = threading.Thread(target=update_stakes_info)
     
     tx_thread.start()
     blocks_thread.start()
     wallets_thread.start()
+    stakes_thread.start()
     
     tx_thread.join()
     blocks_thread.join()
     wallets_thread.join()
+    stakes_thread.join()
