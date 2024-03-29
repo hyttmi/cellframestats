@@ -37,15 +37,17 @@ def fetch_blocks_on_main():
     cursor = conn.cursor()
     cursor.execute("SELECT COUNT(*) FROM blocks")
     row = cursor.fetchone()
+    cursor.close()
+    conn.close()
     return int(row[0])
 
 def chart_daily_blocks(num_days):
-    con = create_connection("databases/blocks.db")
+    conn = create_connection("databases/blocks.db")
     counts_per_day = {}
     for i in range(num_days):
         date_to_fetch = datetime.now() - timedelta(days=i)
         date_str = date_to_fetch.strftime('%Y-%m-%d')
-        cursor = con.cursor()
+        cursor = conn.cursor()
         cursor.execute("SELECT COUNT(*), DATE(timestamp) FROM blocks WHERE DATE(timestamp) = ? GROUP BY DATE(timestamp)", (date_str,))
         result = cursor.fetchone()
         if result:
@@ -53,17 +55,17 @@ def chart_daily_blocks(num_days):
         else:
             counts_per_day[date_str] = 0
         cursor.close() 
-    con.close()
+    conn.close()
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day
 
 def chart_daily_transactions(num_days):
-    con = create_connection("databases/transactions.db")
+    conn = create_connection("databases/transactions.db")
     counts_per_day = {}
     for i in range(num_days):
         date_to_fetch = datetime.now() - timedelta(days=i)
         date_str = date_to_fetch.strftime('%Y-%m-%d')
-        cursor = con.cursor()
+        cursor = conn.cursor()
         cursor.execute("SELECT COUNT(*), DATE(timestamp) FROM transactions WHERE DATE(timestamp) = ? GROUP BY DATE(timestamp)", (date_str,))
         result = cursor.fetchone()
         if result:
@@ -71,7 +73,7 @@ def chart_daily_transactions(num_days):
         else:
             counts_per_day[date_str] = 0
         cursor.close() 
-    con.close()
+    conn.close()
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day
 
@@ -112,7 +114,7 @@ def fetch_all_activated_wallets():
 def fetch_all_active_nodes():
     conn = create_connection("databases/cellframe.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM all_node_names")
+    cursor.execute("SELECT * FROM cellframe_data")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
