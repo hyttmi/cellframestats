@@ -166,3 +166,17 @@ def check_cell_amount_by_wallet_addr(addr):
         return float(row[3])
     else:
         return None
+    
+def fetch_stakes(amount):
+    conn = create_connection("databases/stakes.db")
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM stakes ORDER BY value DESC LIMIT {amount};")
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    if rows:
+        return rows
+    else:
+        return None
+    
+print(fetch_stakes(50))

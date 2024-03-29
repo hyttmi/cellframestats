@@ -39,7 +39,8 @@ async def read_stats(request: Request):
 async def read_stats(request: Request):
     return templates.TemplateResponse("richlist.html", {"request": request, "active_page": "richlist",
                                                      "wallets_info_top_cell": du.fetch_top_wallets("CELL",50),
-                                                     "wallets_info_top_mcell": du.fetch_top_wallets("mCELL",50)})
+                                                     "wallets_info_top_mcell": du.fetch_top_wallets("mCELL",50),
+                                                     "fetch_stakes": du.fetch_stakes(50)})
 
 @app.post("/submit")
 async def submit_form(wallet: str = Form(...)):
