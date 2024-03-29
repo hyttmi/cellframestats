@@ -149,40 +149,37 @@ def update_cf20_wallets_info():
 def update_stakes_info():
     print("Updating stakes database...")
     data = nu.fetch_all_stake_locks()
+    if data:
+        conn = du.create_connection("databases/stakes.db")
+        cursor = conn.cursor()
 
-    conn = du.create_connection("databases/stakes.db")
-    cursor = conn.cursor()
-    
-    cursor.execute('''CREATE TABLE IF NOT EXISTS stakes
-                      (tx_hash TEXT PRIMARY KEY, 
-                      ts_created DATE, 
-                      value REAL, 
-                      srv_uid TEXT, 
-                      reinvest_percent REAL, 
-                      time_unlock TEXT, 
-                      sender_addr TEXT)''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS stakes_temp
-                      (tx_hash TEXT PRIMARY KEY, 
-                      ts_created DATE, 
-                      value REAL, 
-                      srv_uid TEXT, 
-                      reinvest_percent REAL, 
-                      time_unlock TEXT, 
-                      sender_addr TEXT)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS stakes
+                          (tx_hash TEXT PRIMARY KEY, 
+                          ts_created DATE, 
+                          value REAL, 
+                          srv_uid TEXT, 
+                          reinvest_percent REAL, 
+                          time_unlock TEXT, 
+                          sender_addr TEXT)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS stakes_temp
+                          (tx_hash TEXT PRIMARY KEY, 
+                          ts_created DATE, 
+                          value REAL, 
+                          srv_uid TEXT, 
+                          reinvest_percent REAL, 
+                          time_unlock TEXT, 
+                          sender_addr TEXT)''')
 
-    if data is not None:
-        flat_data = [row[0] for row in data]
         cursor.executemany('''INSERT OR IGNORE INTO stakes_temp
-                                  (tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr) 
-                                  VALUES (?, ?, ?, ?, ?, ?, ?)''', flat_data)
+                                      (tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr) 
+                                      VALUES (?, ?, ?, ?, ?, ?, ?)''', data)
         cursor.execute("DROP TABLE IF EXISTS stakes")
         cursor.execute("ALTER TABLE stakes_temp RENAME TO stakes")
+        conn.commit()
+        conn.close()
         print("Update process for stakes done!")
     else:
         print("Failed to update stakes database!")
-
-    conn.commit()
-    conn.close()
 
 
 if __name__ == "__main__":

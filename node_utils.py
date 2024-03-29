@@ -72,63 +72,53 @@ def fetch_cf20_wallets_and_tokens():
     else:
         return None
 
+@timer    
 def fetch_all_stake_locks():
     all_tx_output = sendCommand("ledger tx -all -net Backbone")
+    stake_lock_info = []
     if all_tx_output:
         hashes = re.findall(r"Datum_tx_hash: (0x[0-9a-fA-F]+)", all_tx_output) # Search all hashes
-        released = re.findall(r"tx_prev_hash: (0x[0-9a-fA-F]+)", all_tx_output) # Search all (apparently) returned hashes
-        stake_released = []
-        stake_locks = []
-        
-        if released:
-            for stakes in released:
-                stake_released.append(stakes)
-                
         if hashes:
-            with mp.Pool() as pool: # Send all hashes to pool to check if they are srv_stake locks
-                results_stake_locks = pool.map(fetch_stake_lock_by_hash, hashes)
-            for result_stake_lock in results_stake_locks:
-                if result_stake_lock:
-                    stake_locks.append(result_stake_lock)
-        
-        stake_locks_set = set(stake_locks)
-        stake_released_set = set(stake_released)
-        stake_locks_set -= stake_released_set
-        with mp.Pool() as pool:
-                result_current_stake_locks = pool.map(current_stake_locks, list(stake_locks_set))
-                if result_current_stake_locks:
-                    return result_current_stake_locks
-                else:
-                    return None
+            with mp.Pool() as pool:
+                result_current_locks = pool.map(info_stake_locks, hashes)
+                for result in result_current_locks:
+                    if result is not None:
+                        if "OUT - : 0" in result[7]:
+                            continue
+                        tx_hash = result[0]
+                        ts_created = result[1]
+                        value = result[2]
+                        srv_uid = result[3]
+                        reinvest_percent = result[4]
+                        time_unlock = result[5]
+                        sender_addr = result[6]
+                        stake_lock_info.append((tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr))
+    
+    return stake_lock_info
 
-def current_stake_locks(hash):
-    stakes = []
+def info_stake_locks(hash):
     cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
-    matches = re.findall(r"TS_Created: ([^\n]+).*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*Sender addr: ([^\n]+)", cmd_output, re.DOTALL)
-    if matches:
-        for match in matches:
-            ts_created = datetime.strptime(match[0], "%a %b %d %H:%M:%S %Y").isoformat()
-            value = float(match[1])
-            srv_uid = match[2]
-            reinvest_percent = int(match[3]) / 10**18
-            time_unlock = datetime.utcfromtimestamp(int(match[4])).isoformat()
-            sender_addr = match[5]
-            stake_info = (
-                hash,
-                ts_created,
-                value,
-                srv_uid,
-                reinvest_percent,
-                time_unlock,
-                sender_addr
-            )
-            stakes.append(stake_info)
-        return stakes
+    match_stake_lock = re.search(r"TS_Created: ([^\n]+).*?Token_ticker: CELL.*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+\.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*?Sender addr: ([^\n]+).*?Spent OUTs:(.*)", cmd_output, re.DOTALL)
 
-def fetch_stake_lock_by_hash(hash):
-    tx_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
-    if tx_output:
-        srv_stake_lock = re.search(r"subtype: DAP_CHAIN_TX_OUT_COND_SUBTYPE_SRV_STAKE_LOCK", tx_output)
-        if srv_stake_lock:
-            return hash
-    return None
+    if match_stake_lock:
+        ts_created = datetime.strptime(match_stake_lock.group(1), "%a %b %d %H:%M:%S %Y").isoformat()
+        value = float(match_stake_lock.group(2))
+        srv_uid = match_stake_lock.group(3)
+        reinvest_percent = int(match_stake_lock.group(4)) / 10**18
+        time_unlock = datetime.utcfromtimestamp(int(match_stake_lock.group(5))).isoformat()
+        sender_addr = match_stake_lock.group(6)
+        rest_data = match_stake_lock.group(7)
+        
+        stake_info = (
+            hash,
+            ts_created,
+            value,
+            srv_uid,
+            reinvest_percent,
+            time_unlock,
+            sender_addr,
+            rest_data
+        )
+        return stake_info
+    else: # It's not a stake transaction
+        return None
