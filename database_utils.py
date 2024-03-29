@@ -180,5 +180,3 @@ def fetch_stakes(amount):
         return rows
     else:
         return None
-    
-print(fetch_stakes(50))
