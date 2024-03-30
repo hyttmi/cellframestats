@@ -7,6 +7,7 @@ def timer(fn):
         result = fn(*args, **kwargs)
         end_time = time.perf_counter()
         duration = (end_time - start_time)
+        print(f"  Invoking {fn.__name__}")
         print(f"  Took {duration:0.4f} s")
         return result
     return wrapper
