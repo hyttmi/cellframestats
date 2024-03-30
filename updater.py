@@ -1,11 +1,10 @@
-import time
 import node_utils as nu
 import database_utils as du
 import utils as u
-import sqlite3
-import re
+
 from datetime import datetime
 import threading
+import requests
 
 def create_tables(db_name):
     conn = du.create_connection(f"databases/{db_name}.db")
@@ -182,20 +181,36 @@ def update_cf20_wallets_daily():
     else:
         print("No wallets found.")
     conn.close()
-
+    
+@u.every_x_minutes(30)
+def fetch_latest_database_from_cellframestats(filename):
+    print("Updating cellframe.db...")
+    url = f"http://cellframestats.com/{filename}"
+    
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        with open(f"databases/{filename}", "wb") as file:
+            file.write(response.content)
+        print(f"{filename} updated succesfully!")
+    else:
+        print(f"Failed to download {filename}!")
 
 if __name__ == "__main__":
     tx_thread = threading.Thread(target=update_transactions)
     blocks_thread = threading.Thread(target=update_blocks)
     wallets_thread = threading.Thread(target=update_cf20_wallets_info)
     stakes_thread = threading.Thread(target=update_stakes_info)
+    cellframedb_thread = threading.Thread(target=fetch_latest_database_from_cellframestats("cellframe.db"))
     
     tx_thread.start()
     blocks_thread.start()
     wallets_thread.start()
     stakes_thread.start()
+    cellframedb_thread.start()
     
     tx_thread.join()
     blocks_thread.join()
     wallets_thread.join()
     stakes_thread.join()
+    cellframedb_thread.join()
