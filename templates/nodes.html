@@ -20,7 +20,8 @@
     </div>
   </div>
     <div class="container">
-        <div class="row mx-auto"><img class="logo flex-d mx-auto" src="{{ url_for('static', path='img/logo.svg') }}">
+        <div class="row mx-auto">
+            <img onclick="window.location = '/'" class="logo mx-auto" style="cursor: pointer;" src="{{ url_for('static', path='img/logo.svg') }}">
         </div>
     </div>
     <nav class="navbar navbar-expand-lg">
