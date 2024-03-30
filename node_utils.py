@@ -110,5 +110,3 @@ def info_stake_locks(hash):
         return stake_info
     else: # It's not a stake transaction
         return None
-
-fetch_cf20_wallets_and_tokens()
