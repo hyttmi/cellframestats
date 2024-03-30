@@ -1,18 +1,8 @@
 import subprocess
 from datetime import datetime
 import re
-import time
 import multiprocessing as mp
-
-def timer(fn):
-    def wrapper(*args, **kwargs):
-        start_time = time.perf_counter()
-        result = fn(*args, **kwargs)
-        end_time = time.perf_counter()
-        duration = (end_time - start_time)
-        print(f"  Took {duration:0.4f} s")
-        return result
-    return wrapper
+import utils as u
 
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"
@@ -71,8 +61,7 @@ def fetch_cf20_wallets_and_tokens():
     
     else:
         return None
-
-@timer    
+    
 def fetch_all_stake_locks():
     all_tx_output = sendCommand("ledger tx -all -net Backbone")
     stake_lock_info = []
@@ -93,7 +82,6 @@ def fetch_all_stake_locks():
                         time_unlock = result[5]
                         sender_addr = result[6]
                         stake_lock_info.append((tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr))
-    
     return stake_lock_info
 
 def info_stake_locks(hash):
