@@ -141,9 +141,6 @@ def fetch_node_info_by_addr(addr):
     cursor.execute(f"SELECT all_time_rewards FROM {addr_change} ORDER BY ID DESC LIMIT 1;")
     all_time_rewards = cursor.fetchone()
     
-    cursor.execute(f"SELECT stake_value FROM {addr_change} ORDER BY ID DESC LIMIT 1;")
-    stake_value = cursor.fetchone()
-    
     formatted_date = datetime.strptime(basic_data[1], "%d.%m.%Y").isoformat()
 
     results = {
@@ -155,7 +152,7 @@ def fetch_node_info_by_addr(addr):
         "daily_rewards": latest_data[11],
         "node_version": basic_data[8],
         "alias": basic_data[15] if basic_data[15] else "N/A",
-        "stake_value": stake_value[0],
+        "stake_value": latest_data[5],
         "pkey_hash": basic_data[7],
         "signatures_today": latest_data[9],
         "signatures_all": latest_data[10]
