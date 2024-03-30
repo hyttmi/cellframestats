@@ -1,8 +1,8 @@
 import sqlite3
-import math
 from datetime import datetime, timedelta
 import node_utils as nu
 import re
+import utils as u
 
 def create_connection(db_file): #make connection to the database and return con object or none.
     con = None
@@ -41,6 +41,7 @@ def fetch_blocks_on_main():
     conn.close()
     return int(row[0])
 
+@u.timer
 def chart_daily_blocks(num_days):
     conn = create_connection("databases/blocks.db")
     counts_per_day = {}
@@ -59,6 +60,7 @@ def chart_daily_blocks(num_days):
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day
 
+@u.timer
 def chart_daily_transactions(num_days):
     conn = create_connection("databases/transactions.db")
     counts_per_day = {}
@@ -77,6 +79,7 @@ def chart_daily_transactions(num_days):
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day
 
+@u.timer
 def fetch_all_node_info():
     conn = create_connection("databases/cellframe.db")
     cursor = conn.cursor()
@@ -86,7 +89,7 @@ def fetch_all_node_info():
     conn.close()
     if rows:
         return rows
-    
+@u.timer
 def fetch_top_wallets(token, amount):
     conn = create_connection("databases/wallets.db")
     cursor = conn.cursor()
