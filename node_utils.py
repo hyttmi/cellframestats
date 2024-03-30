@@ -56,7 +56,6 @@ def fetch_cf20_wallets_and_tokens():
             amount = match[2]
             if wallet_address != "null" and (token_ticker == "mCELL" or token_ticker == "CELL"):
                 wallets.append({"wallet_address": wallet_address, "token_ticker": token_ticker, "amount": amount})
-        print(wallets)
         return wallets
     
     else:

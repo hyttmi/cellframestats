@@ -201,7 +201,7 @@ if __name__ == "__main__":
     blocks_thread = threading.Thread(target=update_blocks)
     wallets_thread = threading.Thread(target=update_cf20_wallets_info)
     stakes_thread = threading.Thread(target=update_stakes_info)
-    cellframedb_thread = threading.Thread(target=fetch_latest_database_from_cellframestats("cellframe.db"))
+    cellframedb_thread = threading.Thread(target=fetch_latest_database_from_cellframestats, args=("cellframe.db",))
     
     tx_thread.start()
     blocks_thread.start()
