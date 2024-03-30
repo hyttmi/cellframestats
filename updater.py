@@ -158,7 +158,7 @@ def update_stakes_info():
     else:
         print("Failed to update stakes database!")
 
-@u.every_new_day()        
+@u.every_new_day
 def update_cf20_wallets_daily():
     wallets = nu.fetch_cf20_wallets_and_tokens()
     print("Updating wallets daily amount...")
@@ -180,22 +180,20 @@ def update_cf20_wallets_daily():
     else:
         print("No wallets found.")
     conn.close()
+
+
+if __name__ == "__main__":
+    tx_thread = threading.Thread(target=update_transactions)
+    blocks_thread = threading.Thread(target=update_blocks)
+    wallets_thread = threading.Thread(target=update_cf20_wallets_info)
+    stakes_thread = threading.Thread(target=update_stakes_info)
     
-update_cf20_wallets_daily()
-
-
-#if __name__ == "__main__":
-#    tx_thread = threading.Thread(target=update_transactions)
-#    blocks_thread = threading.Thread(target=update_blocks)
-#    wallets_thread = threading.Thread(target=update_cf20_wallets_info)
-#    stakes_thread = threading.Thread(target=update_stakes_info)
-#    
-#    tx_thread.start()
-#    blocks_thread.start()
-#    wallets_thread.start()
-#    stakes_thread.start()
-#    
-#    tx_thread.join()
-#    blocks_thread.join()
-#    wallets_thread.join()
-#    stakes_thread.join()
+    tx_thread.start()
+    blocks_thread.start()
+    wallets_thread.start()
+    stakes_thread.start()
+    
+    tx_thread.join()
+    blocks_thread.join()
+    wallets_thread.join()
+    stakes_thread.join()
