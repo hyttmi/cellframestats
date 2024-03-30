@@ -47,16 +47,16 @@ def fetch_all_transactions_hash_and_timestamp():
     
 def fetch_cf20_wallets_and_tokens():
     list_all_wallets = sendCommand("ledger list balance -net Backbone")
-    matches = re.findall(r"\s+Ledger balance key:\s+(\w+).*\s+token_ticker: (\w+)\s+balance: (\d+)", list_all_wallets)
+    matches = re.findall(r"\s+Ledger balance key:\s+(Rj.{102}).*\s+token_ticker: (\w+)\s+balance: (\d+)", list_all_wallets)
     wallets = []
     if matches:
-        
         for match in matches:
             wallet_address = match[0]
             token_ticker = match[1]
             amount = match[2]
-            if wallet_address != "null":
+            if wallet_address != "null" and (token_ticker == "mCELL" or token_ticker == "CELL"):
                 wallets.append({"wallet_address": wallet_address, "token_ticker": token_ticker, "amount": amount})
+        print(wallets)
         return wallets
     
     else:
@@ -110,3 +110,5 @@ def info_stake_locks(hash):
         return stake_info
     else: # It's not a stake transaction
         return None
+
+fetch_cf20_wallets_and_tokens()
