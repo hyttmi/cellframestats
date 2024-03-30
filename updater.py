@@ -170,11 +170,13 @@ def update_cf20_wallets_daily():
             token_ticker = wallet["token_ticker"]
             amount = wallet["amount"]
             cursor.execute(f'''CREATE TABLE IF NOT EXISTS {wallet_address} (
-                                date TEXT DEFAULT CURRENT_DATE,
-                                token_ticker TEXT,
-                                amount REAL
-                            )''')
-            cursor.execute(f"INSERT INTO {wallet_address} (date, token_ticker, amount) VALUES (?, ?, ?)",(datetime.now().strftime("%Y-%m-%d"), token_ticker, amount))
+                                    date TEXT,
+                                    token_ticker TEXT,
+                                    amount REAL
+                                )''')
+            cursor.execute(f"DELETE FROM {wallet_address} WHERE date <= date('now', '-365 day')") # 365 days of data is enough I guess...
+            cursor.execute("INSERT INTO {} (date, token_ticker, amount) VALUES (?, ?, ?)".format(wallet_address), 
+                           (datetime.now().strftime("%Y-%m-%d"), token_ticker, amount))
         conn.commit()
         print("Update process for wallets done!")
     else:
