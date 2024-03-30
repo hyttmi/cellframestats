@@ -31,9 +31,7 @@
                       var inputField = document.getElementById("walletInput");
                 
                       form.addEventListener("submit", function(event) {
-                        // Prevent the default form submission
                         event.preventDefault();
-                        // Clear the input field
                         inputField.value = '';
                       });
                     });
@@ -108,8 +106,8 @@
                                 <th>Rank</th>
                                 <th>Wallet address</th>
                                 <th>Amount</th>
-                                <th>Date staked</th>
-                                <th>Date released</th>
+                                <th>Created on</th>
+                                <th>Released on</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -119,8 +117,8 @@
                                 <td>{{ rank.value }}</td>
                                 <td>{{ stake[6] }}</td>
                                 <td>{{ stake[2] }}</td>
-                                <td class="date-staked">{{ stake[1] }}</td>
-                                <td class="date-released">{{ stake[5] }}</td>
+                                <td class="date-format">{{ stake[1] }}</td>
+                                <td class="date-format">{{ stake[5] }}</td>
                             </tr>
                             {% set rank.value = rank.value + 1 %}
                             {% endfor %}
@@ -159,23 +157,6 @@
             document.getElementById("walletInput").value = '';
         }
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const dateStakedElements = document.querySelectorAll('.date-staked');
-            dateStakedElements.forEach(function(element) {
-                const isoDate = element.textContent;
-                const date = new Date(isoDate);
-                element.textContent = date.toLocaleString();
-            });
-        
-            const dateReleasedElements = document.querySelectorAll('.date-released');
-            dateReleasedElements.forEach(function(element) {
-                const isoDate = element.textContent;
-                const date = new Date(isoDate);
-                element.textContent = date.toLocaleString();
-            });
-        });
-        </script>
 </body>
 
 </html>

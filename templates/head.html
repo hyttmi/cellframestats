@@ -28,4 +28,14 @@
     <script src="{{ url_for('static', path='js/worldLow.js') }}"></script>
     {% endif %}
     <title>Cellframestats</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateStakedElements = document.querySelectorAll('.date-format');
+            dateStakedElements.forEach(function(element) {
+                const isoDate = element.textContent;
+                const date = new Date(isoDate);
+                element.textContent = date.toLocaleString();
+            });
+        });
+    </script>
 </head>

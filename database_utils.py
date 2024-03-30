@@ -180,3 +180,15 @@ def fetch_stakes(amount):
         return rows
     else:
         return None
+    
+def fetch_latest_stakes(amount):
+    conn = create_connection("databases/stakes.db")
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM stakes ORDER BY ts_created DESC LIMIT {amount};")
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    if rows:
+        return rows
+    else:
+        return None
