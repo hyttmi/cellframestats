@@ -54,7 +54,7 @@
                 <table class="table table-dark table-hover">
                     <thead class="thead-dark">
                         <tr>
-                            <th>TX Hash</th>
+                            <th>By address</th>
                             <th>Created on</th>
                             <th>Released on</th>
                             <th>Reinvestment percent</th>
@@ -64,7 +64,7 @@
                     <tbody>
                         {% for stake in latest_stakes %}
                         <tr>
-                            <td>{{ stake[0] }}</td>
+                            <td>{{ stake[6] }}</td>
                             <td class="date-format">{{ stake[1] }}</td>
                             <td class="date-format">{{ stake[5] }}</td>
                             <td>{{ stake[4] }}%</td>
