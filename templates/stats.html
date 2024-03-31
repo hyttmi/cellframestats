@@ -86,17 +86,18 @@
 
     <script src="{{ url_for('static', path='js/chart.js') }}"></script>
     <script>
+        var color = getComputedStyle(document.documentElement).getPropertyValue('--chart-color')
         function createChart(ctxId, data, options, which, period, type) {
             const ctx = document.getElementById(ctxId);
             const labels = Object.keys(data).map(dateString => {
                 const date = new Date(dateString);
                 return date.toLocaleDateString();
             });
-        
+
             const dataset = {
                 data: Object.values(data),
-                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-color'), // Use CSS variable for color
-                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-color'), // Use CSS variable for color
+                backgroundColor: color,
+                borderColor: color,
                 borderWidth: 2
             };
             new Chart(ctx, {
@@ -108,43 +109,43 @@
                 options: options
             });
         }
-    
+
         const latest_120_transactions = {{ latest_120_transactions | safe }};
         const latest_120_blocks = {{ latest_120_blocks | safe }};
-    
+
         const options = {
             plugins: {
                 title: {
-                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-color') // Use CSS variable for color
+                    color: color
                 },
                 legend: {
                     display: false
                 },
                 tooltip: {
-                    bodyColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-color'), // Use CSS variable for color
-                    titleColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-color') // Use CSS variable for color
+                    bodyColor: color,
+                    titleColor: color
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--chart-color') // Use CSS variable for color
+                        color: color
                     }
                 },
                 x: {
                     ticks: {
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--chart-color') // Use CSS variable for color
+                        color: color
                     }
                 }
             }
         };
-    
+
         function getDataForDays(data, days) {
             const today = new Date();
             const startDate = new Date(today);
             startDate.setDate(startDate.getDate() - days);
-        
+
             const filteredData = {};
             for (const [dateString, value] of Object.entries(data)) {
                 const date = new Date(dateString);
@@ -152,17 +153,17 @@
                     filteredData[dateString] = value;
                 }
             }
-        
+
             return filteredData;
         }
-    
+
         createChart('chart_blocks_7_days', getDataForDays(latest_120_blocks, 7), options, "Blocks", 7, "bar");
         createChart('chart_blocks_30_days', getDataForDays(latest_120_blocks, 30), options, "Blocks", 30, "bar");
         createChart('chart_blocks_120_days', latest_120_blocks, options, "Blocks", 120, "line");
         createChart('chart_transactions_7_days', getDataForDays(latest_120_transactions, 7), options, "Transactions", 7, "bar");
         createChart('chart_transactions_30_days', getDataForDays(latest_120_transactions, 30), options, "Transactions", 30, "bar");
         createChart('chart_transactions_120_days', latest_120_transactions, options, "Transactions", 120, "line");
-    
+
     </script>
 
 </body>
