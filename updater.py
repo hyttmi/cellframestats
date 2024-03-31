@@ -68,7 +68,7 @@ def copy_to_main_table(db_name):
     print(f"Update process for {db_name} done!")
     conn.close()
 
-@u.every_x_minutes(5)
+@u.every_x_minutes(15)
 def update_blocks():
     print("Updating blocks database...")
     create_tables("blocks")
@@ -78,7 +78,7 @@ def update_blocks():
         print(f"An error occurred while updating blocks: {e}")
         return
     
-@u.every_x_minutes(5)
+@u.every_x_minutes(15)
 def update_transactions():
     print("Updating transactions database...")
     create_tables("transactions")
@@ -88,7 +88,7 @@ def update_transactions():
         print(f"An error occurred while updating transactions: {e}")
         return
 
-@u.every_x_minutes(5)
+@u.every_x_minutes(15)
 def update_cf20_wallets_info():
     wallets = nu.fetch_cf20_wallets_and_tokens()
     print("Updating wallets database...")
