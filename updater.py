@@ -174,8 +174,7 @@ def update_cf20_wallets_daily():
                                     amount REAL
                                 )''')
             cursor.execute(f"DELETE FROM {wallet_address} WHERE date <= date('now', '-365 day')") # 365 days of data is enough I guess...
-            cursor.execute("INSERT INTO {} (date, token_ticker, amount) VALUES (?, ?, ?)".format(wallet_address), 
-                           (datetime.now().strftime("%Y-%m-%d"), token_ticker, amount))
+            cursor.execute(f"INSERT INTO {wallet_address} (date, token_ticker, amount) VALUES (?, ?, ?)",(datetime.now().strftime("%Y-%m-%d"), token_ticker, amount))
         conn.commit()
         print("Update process for wallets done!")
     else:
@@ -202,15 +201,18 @@ if __name__ == "__main__":
     wallets_thread = threading.Thread(target=update_cf20_wallets_info)
     stakes_thread = threading.Thread(target=update_stakes_info)
     cellframedb_thread = threading.Thread(target=fetch_latest_database_from_cellframestats, args=("cellframe.db",))
+    wallets_daily = threading.Thread(target=update_cf20_wallets_daily)
     
     tx_thread.start()
     blocks_thread.start()
     wallets_thread.start()
     stakes_thread.start()
     cellframedb_thread.start()
+    wallets_daily.start()
     
     tx_thread.join()
     blocks_thread.join()
     wallets_thread.join()
     stakes_thread.join()
     cellframedb_thread.join()
+    wallets_daily.join()
