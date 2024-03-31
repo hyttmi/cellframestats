@@ -8,7 +8,7 @@
 body,
 html {
     font-family: "Poppins", sans-serif;
-    background-image: url("img/bg.jpg");
+    background-image: url("img/bg.svg");
     background-size: cover;
     background-attachment: fixed;
     height: 100%;
@@ -238,3 +238,7 @@ footer {
     --bs-tooltip-bg: var(--primary-color);
     --bs-tooltip-color: var(--secondary-color);
   }
+
+svg {
+    fill: var(--primary-color);
+}
