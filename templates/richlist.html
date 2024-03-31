@@ -158,24 +158,6 @@
             document.getElementById("walletInput").value = '';
         }
     </script>
-    <script>
-        function shortenWalletAddress(walletAddress) {
-            return walletAddress.substring(0, 30) + '...';
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            var walletAddressCells = document.querySelectorAll('.wallet-addr');
-            walletAddressCells.forEach(function(cell) {
-                cell.textContent = shortenWalletAddress(cell.textContent);
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function(){
-                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                var tooltipList = tooltipTriggerList.map(function(element){
-                    return new bootstrap.Tooltip(element);
-                });
-            });
-        </script>
 </body>
 
 </html>
