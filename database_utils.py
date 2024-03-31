@@ -79,7 +79,6 @@ def chart_daily_transactions(num_days):
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day
 
-
 def fetch_all_node_info():
     conn = create_connection("databases/cellframe.db")
     cursor = conn.cursor()
