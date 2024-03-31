@@ -1,5 +1,5 @@
 import time 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def timer(fn):
     def wrapper(*args, **kwargs):
@@ -16,12 +16,15 @@ def every_new_day(func):
     def wrapper(*args, **kwargs):
         while True:
             try:
-                current_time = datetime.now().time()
-                if current_time.hour == 0 and current_time.minute == 0:
-                    func(*args, **kwargs)
+                current_datetime = datetime.now()
+                next_midnight = (current_datetime + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+                time_until_midnight = (next_midnight - current_datetime).total_seconds()
+                time.sleep(time_until_midnight)
+                func(*args, **kwargs)
+                
             except Exception as e:
                 print(f"An error occurred: {e}")
-            time.sleep(60)
+    
     return wrapper
 
 def every_x_minutes(x):

@@ -23,28 +23,34 @@
         <div class="row row-stats info">
             <h2 class="text-uppercase text-color-1">Backbone block info</h2>
             <div class="col-sm-6">
+                <br><h6 class="text-color-1">Blocks from the last 7 days</h6>
                 <canvas id="chart_blocks_7_days"></canvas>
             </div>
             <div class="col-sm-6">
+                <br><h6 class="text-color-1">Blocks from the last 30 days</h6>
                 <canvas id="chart_blocks_30_days"></canvas>
             </div>
         </div>
         <div class="row row-stats info">
             <div class="col-sm-12">
+                <h6 class="text-color-1">Blocks from the last 120 days</h6>
                 <canvas id="chart_blocks_120_days"></canvas>
             </div>
         </div>
         <div class="row row-stats info">
             <h2 class="text-uppercase text-color-1">Backbone transactions info</h2>
             <div class="col-sm-6">
+                <br><h6 class="text-color-1">Transactions from the last 7 days</h6>
                 <canvas id="chart_transactions_7_days"></canvas>
             </div>
             <div class="col-sm-6">
+                <br><h6 class="text-color-1">Transactions from the last 30 days</h6>
                 <canvas id="chart_transactions_30_days"></canvas>
             </div>
         </div>
         <div class="row row-stats info">
             <div class="col-sm-12">
+                <br><h6 class="text-color-1">Transactions from the last 120 days</h6>
                 <canvas id="chart_transactions_120_days"></canvas>
             </div>
         </div>
@@ -88,7 +94,6 @@
             });
     
             const dataset = {
-                label: `Daily ${which} / ${period} days`,
                 data: Object.values(data),
                 backgroundColor: '#1bb6c4',
                 borderColor: '#1bb6c4',
@@ -113,9 +118,7 @@
                     color: '#1bb6c4'
                 },
                 legend: {
-                    labels: {
-                        color: '#1bb6c4'
-                    }
+                    display: false
                 },
                 tooltip: {
                     bodyColor: '#1bb6c4',

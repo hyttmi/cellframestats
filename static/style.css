@@ -230,3 +230,8 @@ footer {
     background-color: #131313 !important;
     border: none;
 }
+
+.tooltip-custom {
+    --bs-tooltip-bg: #1bb6c4;
+    --bs-tooltip-color: #131313;
+  }
