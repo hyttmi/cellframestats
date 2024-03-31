@@ -79,7 +79,7 @@ def chart_daily_transactions(num_days):
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day
 
-@u.timer
+
 def fetch_all_node_info():
     conn = create_connection("databases/cellframe.db")
     cursor = conn.cursor()
@@ -89,7 +89,7 @@ def fetch_all_node_info():
     conn.close()
     if rows:
         return rows
-@u.timer
+
 def fetch_top_wallets(token, amount):
     conn = create_connection("databases/wallets.db")
     cursor = conn.cursor()

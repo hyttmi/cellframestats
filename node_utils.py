@@ -31,17 +31,20 @@ def fetch_all_blocks_hash_and_timestamp():
         return blocks
     else:
         return None
-    
+
 def fetch_all_transactions_hash_and_timestamp():
     cmd_output = sendCommand("ledger tx -all -net Backbone")
-    transactions = []
-    pattern = re.findall(r"\s+Datum_tx_hash: (0x.{64})\s+TS_Created: (.*)", cmd_output)
-    if pattern:
-        for hashes, timestamp in pattern:
-            original_datetime = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y")
-            iso8601_timestamp = original_datetime.isoformat()
-            transactions.append({"hash": hashes, "timestamp": iso8601_timestamp})
-        return transactions
+    if cmd_output:
+        transactions = []
+        pattern = re.findall(r"\s+Datum_tx_hash: (0x.{64})\s+TS_Created: (.*)", cmd_output)
+        if pattern:
+            for hashes, timestamp in pattern:
+                original_datetime = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y")
+                iso8601_timestamp = original_datetime.isoformat()
+                transactions.append({"hash": hashes, "timestamp": iso8601_timestamp})
+            return transactions
+        else:
+            return None
     else:
         return None
     

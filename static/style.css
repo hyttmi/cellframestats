@@ -1,8 +1,16 @@
+:root {
+    --primary-color: #11b6c4;
+    --hover-color: #119eaa;
+    --secondary-color: #0c0c0c;
+    --chart-color: #11b6c4;
+}
+
 body,
 html {
     font-family: "Poppins", sans-serif;
     background-image: url("img/bg.jpg");
     background-size: cover;
+    background-attachment: fixed;
     height: 100%;
 }
 
@@ -20,13 +28,13 @@ html {
     padding-left: 20px;
     padding-right: 20px;
     height: 60px;
-    background-color: #1bb6c4;
+    background-color: var(--primary-color);
     text-transform: uppercase;
 }
 
 .nav-link {
     color: #131313;
-    background-color: #1bb6c4;
+    background-color: var(--primary-color);
     height: 60px;
     padding-top: 18px;
 }
@@ -34,12 +42,12 @@ html {
 .navbar-nav .nav-link.active,
 .navbar-nav .nav-link.show {
     color: #131313;
-    background-color: #119eaa;
+    background-color: var(--hover-color);
 }
 
 .nav-link:hover {
     color: #131313;
-    background-color: #119eaa;
+    background-color: var(--hover-color);
 }
 
 .nav-item {
@@ -61,17 +69,17 @@ html {
 
 .main-content {
     margin-top: 30px;
-    background-color: #131313;
+    background-color: var(--secondary-color);
 }
 
 .row-stats-heading {
     margin-top: 12px;
-    color: #1bb6c4;
+    color: var(--primary-color);
     font-weight: bold;
 }
 
 .stats {
-    color: #1bb6c4;
+    color: var(--primary-color);
     font-weight: bold;
     padding-top: 20px;
 }
@@ -84,12 +92,12 @@ footer {
     margin-top: 50px;
     padding-bottom: 10px;
     padding-top: 10px;
-    background-color: #131313;
-    color: #1bb6c4;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
 }
 
 .navbar-nav .nav-link:focus {
-    color: #131313;
+    color: var(--secondary-color);
 }
 
 .footer-heading {
@@ -105,16 +113,16 @@ footer {
 }
 
 .text-color-1 {
-    color: #1bb6c4;
+    color: var(--primary-color);
 }
 
 .link {
-    color: #1bb6c4;
+    color: var(--primary-color);
     text-decoration: none;
 }
 
 .link:hover, .modal-title {
-    color: #119eaa
+    color: var(--hover-color)
 }
 
 .alert_red {
@@ -147,7 +155,7 @@ footer {
 
 .heading-small {
     text-transform: uppercase;
-    color: #1bb6c4;
+    color: var(--primary-color);
 }
 
 .table {
@@ -161,7 +169,7 @@ footer {
 }
 
 .wallet-input {
-    background: #1bb6c4;
+    background: var(--primary-color);
     margin-top: 40px;
     border-radius: 10px;
     color: #FFFFFF;
@@ -185,20 +193,15 @@ footer {
 }
 
 .btn-custom {
-    background: #1bb6c4;
+    background: var(--primary-color);
     border: none;
     padding: 11px;
     border-radius: 8px;
     margin-left: 5px;
 }
 
-.btn-custom:hover {
-    background: #119eaa;
-    border: none;
-}
-
-.btn-custom:active {
-    background: #119eaa;
+.btn-custom:hover, .btn-custom:active {
+    background: var(--hover-color);
     border: none;
 }
 
@@ -212,12 +215,12 @@ footer {
 }
 
 .table {
-    --bs-table-hover-bg: #1bb6c4;
-    --bs-table-hover-color: #131313;
+    --bs-table-hover-bg: var(--primary-color);
+    --bs-table-hover-color: var(--secondary-color);
 }
 
 .node-link {
-    color: #131313;
+    color: var(--secondary-color);
     text-decoration: none;
     font-weight: bold;
 }
@@ -232,6 +235,6 @@ footer {
 }
 
 .tooltip-custom {
-    --bs-tooltip-bg: #1bb6c4;
-    --bs-tooltip-color: #131313;
+    --bs-tooltip-bg: var(--primary-color);
+    --bs-tooltip-color: var(--secondary-color);
   }

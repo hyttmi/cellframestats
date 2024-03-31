@@ -83,7 +83,7 @@
         </div>
     </div>
     {% include "footer.html" %}
-    
+
     <script src="{{ url_for('static', path='js/chart.js') }}"></script>
     <script>
         function createChart(ctxId, data, options, which, period, type) {
@@ -92,11 +92,11 @@
                 const date = new Date(dateString);
                 return date.toLocaleDateString();
             });
-    
+        
             const dataset = {
                 data: Object.values(data),
-                backgroundColor: '#1bb6c4',
-                borderColor: '#1bb6c4',
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-color'), // Use CSS variable for color
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-color'), // Use CSS variable for color
                 borderWidth: 2
             };
             new Chart(ctx, {
@@ -115,26 +115,26 @@
         const options = {
             plugins: {
                 title: {
-                    color: '#1bb6c4'
+                    color: getComputedStyle(document.documentElement).getPropertyValue('--chart-color') // Use CSS variable for color
                 },
                 legend: {
                     display: false
                 },
                 tooltip: {
-                    bodyColor: '#1bb6c4',
-                    titleColor: '#1bb6c4'
+                    bodyColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-color'), // Use CSS variable for color
+                    titleColor: getComputedStyle(document.documentElement).getPropertyValue('--chart-color') // Use CSS variable for color
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        color: '#1bb6c4'
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--chart-color') // Use CSS variable for color
                     }
                 },
                 x: {
                     ticks: {
-                        color: '#1bb6c4'
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--chart-color') // Use CSS variable for color
                     }
                 }
             }
@@ -144,7 +144,7 @@
             const today = new Date();
             const startDate = new Date(today);
             startDate.setDate(startDate.getDate() - days);
-    
+        
             const filteredData = {};
             for (const [dateString, value] of Object.entries(data)) {
                 const date = new Date(dateString);
@@ -152,7 +152,7 @@
                     filteredData[dateString] = value;
                 }
             }
-    
+        
             return filteredData;
         }
     

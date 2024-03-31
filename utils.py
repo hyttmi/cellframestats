@@ -1,13 +1,13 @@
 import time 
 from datetime import datetime, timedelta
 
-def timer(fn):
+def timer(func):
     def wrapper(*args, **kwargs):
         start_time = time.perf_counter()
-        result = fn(*args, **kwargs)
+        result = func(*args, **kwargs)
         end_time = time.perf_counter()
         duration = (end_time - start_time)
-        print(f"  Invoking {fn.__name__}")
+        print(f"  Invoking {func.__name__}")
         print(f"  Took {duration:0.4f} s")
         return result
     return wrapper
