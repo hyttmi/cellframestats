@@ -70,7 +70,7 @@
                     <tbody>
                         {% for stake in latest_stakes %}
                         <tr>
-                            <td>{{ stake[6] }}</td>
+                            <td class="wallet-addr" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ stake[6] }}" data-bs-custom-class="tooltip-custom">{{ stake[6] }}</td>
                             <td class="date-format">{{ stake[1] }}</td>
                             <td class="date-format">{{ stake[5] }}</td>
                             <td>{{ stake[4] }}%</td>
