@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import datetime, timedelta
+import utils as u
 
 def create_connection(db_file): #make connection to the database and return con object or none.
     con = None
@@ -37,6 +38,7 @@ def fetch_blocks_on_main():
     conn.close()
     return int(row[0]) if row else None
 
+@u.timer
 def chart_daily_blocks(num_days):
     conn = create_connection("databases/blocks.db")
     counts_per_day = {}
@@ -55,6 +57,7 @@ def chart_daily_blocks(num_days):
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
     return counts_per_day if counts_per_day else None
 
+@u.timer
 def chart_daily_transactions(num_days):
     conn = create_connection("databases/transactions.db")
     counts_per_day = {}
@@ -157,7 +160,8 @@ def fetch_stakes(amount):
     cursor.close()
     conn.close()
     return rows if rows else None
-    
+ 
+@u.timer   
 def fetch_latest_stakes(amount):
     conn = create_connection("databases/stakes.db")
     cursor = conn.cursor()
