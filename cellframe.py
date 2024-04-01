@@ -51,7 +51,7 @@ async def read_nodes(request: Request):
 @app.get("/richlist", response_class=HTMLResponse)
 async def read_richlist(request: Request):
     top_wallets_cell = await run_async(du.fetch_top_wallets, "CELL", 100)
-    top_stakes = await run_async(du.fetch_stakes, 50)
+    top_stakes = await run_async(du.fetch_stakes, 100)
     return templates.TemplateResponse("richlist.html", {"request": request, "active_page": "richlist",
                                                      "wallets_info_top_cell": top_wallets_cell,
                                                      "fetch_stakes": top_stakes})
