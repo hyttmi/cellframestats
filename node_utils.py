@@ -18,16 +18,16 @@ def sendCommand(command):
     except Exception as e:
         print(f"Exception occurred while executing command: {e}")
         return False
-    
+
 def fetch_all_blocks_hash_and_timestamp():
     cmd_output = sendCommand("block list -net Backbone -chain main")
     blocks = []
-    pattern = re.findall(r"(0x[A-Z0-9]{64}): ts_create=(.*)", cmd_output)
-    if pattern:
-        for hashes, timestamp in pattern:
-            original_datetime = datetime.strptime(timestamp, "%a, %d %b %Y %H:%M:%S %z")
-            iso8601_timestamp = original_datetime.isoformat()
-            blocks.append({"hash": hashes, "timestamp": iso8601_timestamp})
+    pattern = re.compile(r"(0x[A-Z0-9]{64}): ts_create=(.*)")
+    match = pattern.findall(cmd_output)
+    if match:
+        for hashes, timestamp in match:
+            blocks.append({"hash": hashes, "timestamp": u.convert_timestamp_to_iso8601(timestamp)})
+        print(blocks)
         return blocks
     else:
         return None
@@ -36,21 +36,22 @@ def fetch_all_transactions_hash_and_timestamp():
     cmd_output = sendCommand("ledger tx -all -net Backbone")
     if cmd_output:
         transactions = []
-        pattern = re.findall(r"\s+Datum_tx_hash: (0x.{64})\s+TS_Created: (.*)", cmd_output)
-        if pattern:
-            for hashes, timestamp in pattern:
-                original_datetime = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y")
-                iso8601_timestamp = original_datetime.isoformat()
-                transactions.append({"hash": hashes, "timestamp": iso8601_timestamp})
+        pattern = re.compile(r"\s+Datum_tx_hash: (0x.{64})\s+TS_Created: (.*)")
+        match = pattern.findall(cmd_output)
+        if match:
+            for hashes, timestamp in match:
+                transactions.append({"hash": hashes, "timestamp": u.convert_timestamp_to_iso8601(timestamp)})
+            print(transactions)
             return transactions
         else:
             return None
     else:
         return None
-    
+
 def fetch_cf20_wallets_and_tokens():
     list_all_wallets = sendCommand("ledger list balance -net Backbone")
-    matches = re.findall(r"\s+Ledger balance key:\s+(Rj.{102}).*\s+token_ticker: (\w+)\s+balance: (\d+)", list_all_wallets)
+    pattern = re.compile(r"\s+Ledger balance key:\s+(Rj.{102}).*\s+token_ticker: (\w+)\s+balance: (\d+)")
+    matches = pattern.findall(list_all_wallets)
     wallets = []
     if matches:
         for match in matches:
@@ -59,16 +60,18 @@ def fetch_cf20_wallets_and_tokens():
             amount = match[2]
             if wallet_address != "null":
                 wallets.append({"wallet_address": wallet_address, "token_ticker": token_ticker, "amount": amount})
-        return wallets
-    
+        print(wallets)
+        return wallets 
     else:
         return None
-    
+
+@u.timer    
 def fetch_all_stake_locks():
     all_tx_output = sendCommand("ledger tx -all -net Backbone")
     stake_lock_info = []
     if all_tx_output:
-        hashes = re.findall(r"Datum_tx_hash: (0x[0-9a-fA-F]+)", all_tx_output) # Search all hashes
+        pattern = re.compile(r"Datum_tx_hash: (0x[0-9a-fA-F]+)") # Search all hashes
+        hashes = pattern.findall(all_tx_output)
         if hashes:
             with mp.Pool() as pool:
                 result_current_locks = pool.map(info_stake_locks, hashes)
@@ -88,7 +91,12 @@ def fetch_all_stake_locks():
 
 def info_stake_locks(hash):
     cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
-    match_stake_lock = re.search(r"TS_Created: ([^\n]+).*?Token_ticker: CELL.*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+\.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*?Sender addr: ([^\n]+).*?Spent OUTs:(.*)", cmd_output, re.DOTALL)
+    pattern = re.compile(r"TS_Created: ([^\n]+)"
+                     r".*?Token_ticker: CELL"
+                     r".*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+\.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+)"
+                     r".*?Sender addr: ([^\n]+)"
+                     r".*?Spent OUTs:(.*)", re.DOTALL)
+    match_stake_lock = pattern.search(cmd_output)
 
     if match_stake_lock:
         ts_created = datetime.strptime(match_stake_lock.group(1), "%a %b %d %H:%M:%S %Y").isoformat()

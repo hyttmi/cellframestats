@@ -38,3 +38,18 @@ def every_x_minutes(x):
                 time.sleep(x * 60)
         return wrapper
     return decorator
+
+def convert_timestamp_to_iso8601(timestamp):
+    if timestamp:
+        try:
+            date_obj_as_iso8601 = datetime.strptime(timestamp, "%a, %d %b %Y %H:%M:%S %z").isoformat()
+            return date_obj_as_iso8601
+        except ValueError:
+            try:
+                date_obj_as_iso8601 = datetime.strptime(timestamp, "%a %b %d %H:%M:%S %Y").isoformat()
+                return date_obj_as_iso8601
+            except ValueError as e:
+                print(f"An error occurred during timestamp conversion: {e}")
+                return None
+    else:
+        return None
