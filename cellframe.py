@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
 
 import node_utils as nu
 import database_utils as du
@@ -28,16 +30,22 @@ async def read_stats(request: Request):
                                                      "latest_stakes": du.fetch_latest_stakes(20)})
 
 @app.get("/nodes", response_class=HTMLResponse)
-async def read_stats(request: Request):
+async def read_nodes(request: Request):
     return templates.TemplateResponse("nodes.html", {"request": request, "active_page": "nodes",
                                                      "node_info": du.fetch_all_node_info()})
 
 @app.get("/richlist", response_class=HTMLResponse)
-async def read_stats(request: Request):
+async def read_richlist(request: Request):
     return templates.TemplateResponse("richlist.html", {"request": request, "active_page": "richlist",
                                                      "wallets_info_top_cell": du.fetch_top_wallets("CELL",50),
                                                      "wallets_info_top_mcell": du.fetch_top_wallets("mCELL",50),
                                                      "fetch_stakes": du.fetch_stakes(50)})
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return templates.TemplateResponse("error.html", {"request": request, "code": exc.status_code,
+                                                     "msg": exc.detail,
+                                                     "url": request.url.path})
 
 @app.post("/submit")
 async def submit_form(wallet: str = Form(...)):
