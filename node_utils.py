@@ -27,7 +27,6 @@ def fetch_all_blocks_hash_and_timestamp():
     if match:
         for hashes, timestamp in match:
             blocks.append({"hash": hashes, "timestamp": u.convert_timestamp_to_iso8601(timestamp)})
-        print(blocks)
         return blocks
     else:
         return None
@@ -76,9 +75,7 @@ def fetch_all_stake_locks():
             with mp.Pool() as pool:
                 result_current_locks = pool.map(info_stake_locks, hashes)
                 for result in result_current_locks:
-                    if result is not None:
-                        if "OUT - : 0" in result[7]:
-                            continue
+                    if result is not None and "OUT - : 0" not in result[7]:
                         tx_hash = result[0]
                         ts_created = result[1]
                         value = result[2]
