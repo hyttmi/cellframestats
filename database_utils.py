@@ -1,8 +1,5 @@
 import sqlite3
 from datetime import datetime, timedelta
-import node_utils as nu
-import re
-import utils as u
 
 def create_connection(db_file): #make connection to the database and return con object or none.
     con = None
