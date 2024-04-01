@@ -94,7 +94,9 @@ def fetch_all_stake_locks():
                         sender_addr = result[6]
                         stake_lock_info.append((tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr))
                         existing_hashes.add(tx_hash)
-    return stake_lock_info
+        return stake_lock_info
+    else:
+        return None
 
 def info_stake_locks(hash):
     cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")

@@ -125,7 +125,7 @@ def update_cf20_wallets_info():
 def update_stakes_info():
     print("Updating stakes database...")
     data = nu.fetch_all_stake_locks()
-    if data:
+    if data is not None:
         conn = du.create_connection("databases/stakes.db")
         cursor = conn.cursor()
 
