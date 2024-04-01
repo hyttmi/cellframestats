@@ -137,25 +137,15 @@ def update_stakes_info():
                           reinvest_percent REAL, 
                           time_unlock TEXT, 
                           sender_addr TEXT)''')
-        cursor.execute('''CREATE TABLE IF NOT EXISTS stakes_temp
-                          (tx_hash TEXT PRIMARY KEY, 
-                          ts_created TEXT, 
-                          value REAL, 
-                          srv_uid TEXT, 
-                          reinvest_percent REAL, 
-                          time_unlock TEXT, 
-                          sender_addr TEXT)''')
 
-        cursor.executemany('''INSERT OR IGNORE INTO stakes_temp
+        cursor.executemany('''INSERT OR IGNORE INTO stakes
                                       (tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr) 
                                       VALUES (?, ?, ?, ?, ?, ?, ?)''', data)
-        cursor.execute("DROP TABLE IF EXISTS stakes")
-        cursor.execute("ALTER TABLE stakes_temp RENAME TO stakes")
         conn.commit()
         conn.close()
         print("Update process for stakes done!")
     else:
-        print("Failed to update stakes database!")
+        print("Stakes not updated as there was no new data to process!") # There's no data if there's no new stakes.
 
 @u.every_new_day
 def update_cf20_wallets_daily():

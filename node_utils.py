@@ -41,7 +41,6 @@ def fetch_all_transactions_hash_and_timestamp():
         if match:
             for hashes, timestamp in match:
                 transactions.append({"hash": hashes, "timestamp": u.convert_timestamp_to_iso8601(timestamp)})
-            print(transactions)
             return transactions
         else:
             return None
@@ -60,12 +59,10 @@ def fetch_cf20_wallets_and_tokens():
             amount = match[2]
             if wallet_address != "null":
                 wallets.append({"wallet_address": wallet_address, "token_ticker": token_ticker, "amount": amount})
-        print(wallets)
         return wallets 
     else:
         return None
 
-@u.timer
 def fetch_all_stake_locks():
     all_tx_output = sendCommand("ledger tx -all -net Backbone")
     stake_lock_info = []
@@ -74,15 +71,15 @@ def fetch_all_stake_locks():
         hashes = pattern.findall(all_tx_output)
         if hashes:
             script_dir = os.path.dirname(os.path.abspath(__file__))
-            all_hashes_file_path = os.path.join(script_dir, "stake_hashes.txt")
+            tx_hashes_file_path = os.path.join(script_dir, "tx_hashes.txt")
             existing_hashes = set()
-            if os.path.exists(all_hashes_file_path):
-                with open(all_hashes_file_path, "r") as f:
+            if os.path.exists(tx_hashes_file_path):
+                with open(tx_hashes_file_path, "r") as f:
                     for line in f:
                         existing_hashes.add(line.strip())
-            new_hashes = [hash for hash in hashes if hash not in existing_hashes]
+            new_hashes = [hash for hash in hashes if hash not in existing_hashes] # Only process new hashes, saves about 35+ seconds for now...
             if new_hashes:
-                with open(all_hashes_file_path, "a") as stake_hashes_file:
+                with open(tx_hashes_file_path, "a") as stake_hashes_file:
                     stake_hashes_file.write("\n".join(new_hashes) + "\n")
             with mp.Pool() as pool:
                 result_current_locks = pool.map(info_stake_locks, new_hashes)
@@ -98,7 +95,6 @@ def fetch_all_stake_locks():
                         stake_lock_info.append((tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr))
                         existing_hashes.add(tx_hash)
     return stake_lock_info
-
 
 def info_stake_locks(hash):
     cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
@@ -131,5 +127,3 @@ def info_stake_locks(hash):
         return stake_info
     else: # It's not a stake transaction
         return None
-    
-fetch_all_stake_locks()
