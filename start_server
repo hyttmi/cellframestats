@@ -1,2 +1,2 @@
 #!/bin/bash
-uvicorn cellframe:app --reload
+gunicorn -k uvicorn.workers.UvicornWorker cellframe:app
