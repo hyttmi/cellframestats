@@ -17,7 +17,7 @@ def fetch_all_transactions():
     row = cursor.fetchone()[0]
     cursor.close()
     conn.close()
-    return row
+    return row if row else None
     
 def fetch_all_staked_tokens():
     conn = create_connection("databases/stakes.db")
@@ -26,8 +26,7 @@ def fetch_all_staked_tokens():
     row = cursor.fetchone()[0]
     cursor.close()
     conn.close()
-    if row:
-        return row
+    return row if row else None
     
 def fetch_blocks_on_main():
     conn = create_connection("databases/blocks.db")
@@ -36,7 +35,7 @@ def fetch_blocks_on_main():
     row = cursor.fetchone()
     cursor.close()
     conn.close()
-    return int(row[0])
+    return int(row[0]) if row else None
 
 def chart_daily_blocks(num_days):
     conn = create_connection("databases/blocks.db")
@@ -54,7 +53,7 @@ def chart_daily_blocks(num_days):
         cursor.close() 
     conn.close()
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
-    return counts_per_day
+    return counts_per_day if counts_per_day else None
 
 def chart_daily_transactions(num_days):
     conn = create_connection("databases/transactions.db")
@@ -72,7 +71,7 @@ def chart_daily_transactions(num_days):
         cursor.close() 
     conn.close()
     counts_per_day = dict(reversed(list(counts_per_day.items()))) # Need to reverse, otherwise graphs are on a wrong order
-    return counts_per_day
+    return counts_per_day if counts_per_day else None
 
 def fetch_all_node_info():
     conn = create_connection("databases/cellframe.db")
@@ -81,8 +80,7 @@ def fetch_all_node_info():
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
-    if rows:
-        return rows
+    return rows if rows else None
 
 def fetch_top_wallets(token, amount):
     conn = create_connection("databases/wallets.db")
@@ -91,10 +89,7 @@ def fetch_top_wallets(token, amount):
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
-    if rows:
-        return rows
-    else:
-        return None
+    return rows if rows else None
     
 def fetch_all_activated_wallets():
     conn = create_connection("databases/wallets.db")
@@ -103,10 +98,7 @@ def fetch_all_activated_wallets():
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
-    if rows:
-        return len(rows)
-    else:
-        return None
+    return len(rows) if rows else None
     
 def fetch_all_active_nodes():
     conn = create_connection("databases/cellframe.db")
@@ -115,10 +107,7 @@ def fetch_all_active_nodes():
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
-    if rows:
-        return(len(rows))
-    else:
-        return None
+    return(len(rows)) if rows else None
         
 def fetch_node_info_by_addr(addr):
     conn = create_connection("databases/cellframe.db")
@@ -151,17 +140,14 @@ def fetch_node_info_by_addr(addr):
         "signatures_today": latest_data[9],
         "signatures_all": latest_data[10]
     }
-    return results
+    return results if results else None
 
 def check_cell_amount_by_wallet_addr(addr):
     conn = create_connection("databases/wallets.db")
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM cf20 WHERE wallet_address IS '{addr}' AND token_ticker IS 'CELL';")
     row = cursor.fetchone()
-    if row:
-        return float(row[3])
-    else:
-        return None
+    return float(row[3]) if row else None
     
 def fetch_stakes(amount):
     conn = create_connection("databases/stakes.db")
@@ -170,10 +156,7 @@ def fetch_stakes(amount):
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
-    if rows:
-        return rows
-    else:
-        return None
+    return rows if rows else None
     
 def fetch_latest_stakes(amount):
     conn = create_connection("databases/stakes.db")
@@ -182,7 +165,4 @@ def fetch_latest_stakes(amount):
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
-    if rows:
-        return rows
-    else:
-        return None
+    return rows if rows else None

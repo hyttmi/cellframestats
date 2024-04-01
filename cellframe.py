@@ -44,16 +44,19 @@ async def read_stats(request: Request):
 
 @app.get("/nodes", response_class=HTMLResponse)
 async def read_nodes(request: Request):
-    nodes = await run_async(du.fetch_all_node_info())
+    all_node_info = await run_async(du.fetch_all_node_info)
     return templates.TemplateResponse("nodes.html", {"request": request, "active_page": "nodes",
-                                                     "node_info": nodes})
+                                                     "node_info": all_node_info})
 
 @app.get("/richlist", response_class=HTMLResponse)
 async def read_richlist(request: Request):
+    top_wallets_cell = await run_async(du.fetch_top_wallets, "CELL", 50)
+    top_wallets_mcell = await run_async(du.fetch_top_wallets, "mCELL", 50)
+    top_stakes = await run_async(du.fetch_stakes, 50)
     return templates.TemplateResponse("richlist.html", {"request": request, "active_page": "richlist",
-                                                     "wallets_info_top_cell": du.fetch_top_wallets("CELL",50),
-                                                     "wallets_info_top_mcell": du.fetch_top_wallets("mCELL",50),
-                                                     "fetch_stakes": du.fetch_stakes(50)})
+                                                     "wallets_info_top_cell": top_wallets_cell,
+                                                     "wallets_info_top_mcell": top_wallets_mcell,
+                                                     "fetch_stakes": top_stakes})
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
