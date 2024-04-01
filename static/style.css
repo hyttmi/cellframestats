@@ -243,3 +243,8 @@ footer {
 svg {
     fill: var(--primary-color);
 }
+
+
+.error {
+    font-size: 10rem;
+}
