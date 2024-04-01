@@ -1,6 +1,7 @@
 import subprocess
 from datetime import datetime
 import re
+import os
 import multiprocessing as mp
 import utils as u
 
@@ -64,7 +65,7 @@ def fetch_cf20_wallets_and_tokens():
     else:
         return None
 
-@u.timer    
+@u.timer
 def fetch_all_stake_locks():
     all_tx_output = sendCommand("ledger tx -all -net Backbone")
     stake_lock_info = []
@@ -72,8 +73,19 @@ def fetch_all_stake_locks():
         pattern = re.compile(r"Datum_tx_hash: (0x[0-9a-fA-F]+)") # Search all hashes
         hashes = pattern.findall(all_tx_output)
         if hashes:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            all_hashes_file_path = os.path.join(script_dir, "stake_hashes.txt")
+            existing_hashes = set()
+            if os.path.exists(all_hashes_file_path):
+                with open(all_hashes_file_path, "r") as f:
+                    for line in f:
+                        existing_hashes.add(line.strip())
+            new_hashes = [hash for hash in hashes if hash not in existing_hashes]
+            if new_hashes:
+                with open(all_hashes_file_path, "a") as stake_hashes_file:
+                    stake_hashes_file.write("\n".join(new_hashes) + "\n")
             with mp.Pool() as pool:
-                result_current_locks = pool.map(info_stake_locks, hashes)
+                result_current_locks = pool.map(info_stake_locks, new_hashes)
                 for result in result_current_locks:
                     if result is not None and "OUT - : 0" not in result[7]:
                         tx_hash = result[0]
@@ -84,7 +96,9 @@ def fetch_all_stake_locks():
                         time_unlock = result[5]
                         sender_addr = result[6]
                         stake_lock_info.append((tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr))
+                        existing_hashes.add(tx_hash)
     return stake_lock_info
+
 
 def info_stake_locks(hash):
     cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
@@ -117,3 +131,5 @@ def info_stake_locks(hash):
         return stake_info
     else: # It's not a stake transaction
         return None
+    
+fetch_all_stake_locks()
