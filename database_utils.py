@@ -153,7 +153,7 @@ def check_cell_amount_by_wallet_addr(addr):
 def fetch_stakes(amount):
     conn = create_connection("databases/stakes.db")
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM stakes ORDER BY value DESC LIMIT {amount};")
+    cursor.execute(f"SELECT sender_addr, SUM(value) AS total_value FROM stakes GROUP BY sender_addr ORDER BY total_value DESC LIMIT {amount};")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()

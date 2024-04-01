@@ -114,8 +114,6 @@
                                 <th>Rank</th>
                                 <th>Wallet address</th>
                                 <th>Amount</th>
-                                <th>Created on</th>
-                                <th>Released on</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,10 +121,8 @@
                             {% for stake in fetch_stakes %}
                             <tr>
                                 <td>{{ rank.value }}</td>
-                                <td class="wallet-addr" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ stake[6] }}" data-bs-custom-class="tooltip-custom">{{ stake[6] }}</td>
-                                <td>{{ stake[2] }}</td>
-                                <td class="date-format">{{ stake[1] }}</td>
-                                <td class="date-format">{{ stake[5] }}</td>
+                                <td class="wallet-addr" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ stake[0] }}" data-bs-custom-class="tooltip-custom">{{ stake[0] }}</td>
+                                <td>{{ stake[1] }}</td>
                             </tr>
                             {% set rank.value = rank.value + 1 %}
                             {% endfor %}
