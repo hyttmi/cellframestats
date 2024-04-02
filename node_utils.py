@@ -4,6 +4,7 @@ import re
 import os
 import multiprocessing as mp
 import utils as u
+import pytest
 
 def sendCommand(command):
     full_command = f"/opt/cellframe-node/bin/cellframe-node-cli {command}"
@@ -46,7 +47,7 @@ def fetch_all_transactions_hash_and_timestamp():
             return None
     else:
         return None
-
+    
 def fetch_cf20_wallets_and_tokens():
     list_all_wallets = sendCommand("ledger list balance -net Backbone")
     pattern = re.compile(r"\s+Ledger balance key:\s+(Rj.{102}).*\s+token_ticker: (\w+)\s+balance: (\d+)")
@@ -129,3 +130,14 @@ def info_stake_locks(hash):
         return stake_info
     else: # It's not a stake transaction
         return None
+    
+def test_run():
+    functions = [
+        fetch_all_blocks_hash_and_timestamp,
+        fetch_all_transactions_hash_and_timestamp,
+        fetch_cf20_wallets_and_tokens,
+        fetch_all_stake_locks
+    ]
+    for function in functions:
+        result = function()
+        assert result is not None, f"{function.__name__} returned None"
