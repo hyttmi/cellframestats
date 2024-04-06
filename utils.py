@@ -14,18 +14,24 @@ def timer(func):
 
 def every_new_day(func):
     def wrapper(*args, **kwargs):
-        while True:
+        max_retries = 3
+        retry_count = 0
+        while retry_count < max_retries:
             try:
                 current_datetime = datetime.now()
                 next_midnight = (current_datetime + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
                 time_until_midnight = (next_midnight - current_datetime).total_seconds()
                 time.sleep(time_until_midnight)
                 func(*args, **kwargs)
-                
+                break
             except Exception as e:
-                print(f"An error occurred: {e}")
-    
+                retry_count += 1
+                time.sleep(60)
+                print(f"An error occurred: {e}. Retrying...")
+        else:
+            print("Max retries reached. Update process failed.")
     return wrapper
+
 
 def every_x_minutes(x):
     def decorator(func):
