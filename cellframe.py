@@ -5,7 +5,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-
 import node_utils as nu
 import database_utils as du
 import common as co
@@ -69,7 +68,7 @@ async def submit_form(wallet: str = Form(...)):
 
 @app.get("/node_info")
 async def get_node_info(address: str):
-    result = du.fetch_node_info_by_addr(address)
+    result = await run_async(du.fetch_node_info_by_addr)
     if result:
         return result
     else:
