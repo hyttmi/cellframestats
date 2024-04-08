@@ -116,6 +116,7 @@ def fetch_node_info_by_addr(addr):
     cursor = conn.cursor()
     addr_change = addr.replace("::","")
     addr_change = f"N{addr_change}"
+    print(addr_change)
     
     cursor.execute(f"SELECT * FROM {addr_change} ORDER BY ID ASC LIMIT 1;")
     basic_data = cursor.fetchone()
