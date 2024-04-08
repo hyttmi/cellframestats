@@ -1,2 +1,2 @@
 #!/bin/bash
-gunicorn --access-logfile gunicorn.log -k uvicorn.workers.UvicornWorker cellframe:app
+gunicorn -b 0.0.0.0:8000 --access-logfile gunicorn.log -k uvicorn.workers.UvicornWorker cellframe:app
