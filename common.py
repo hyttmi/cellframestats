@@ -2,6 +2,7 @@ import re
 import database_utils as du
 
 def validate_input(input):
+    print(input)
     total_supply = 30300000
     input_strip = input.strip()
 
