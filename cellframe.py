@@ -68,8 +68,7 @@ async def submit_form(wallet: str = Form(...)):
 
 @app.get("/node_info")
 async def get_node_info(address: str):
-    print(address)
-    result = await run_async(du.fetch_node_info_by_addr)
+    result = await run_async(du.fetch_node_info_by_addr, address)
     if result:
         return result
     else:

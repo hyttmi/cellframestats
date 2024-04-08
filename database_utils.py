@@ -111,12 +111,10 @@ def fetch_all_active_nodes():
     return(len(rows)) if rows else None
         
 def fetch_node_info_by_addr(addr):
-    print(f"got addr{addr}")
     conn = create_connection("databases/cellframe.db")
     cursor = conn.cursor()
     addr_change = addr.replace("::","")
     addr_change = f"N{addr_change}"
-    print(addr_change)
     
     cursor.execute(f"SELECT * FROM {addr_change} ORDER BY ID ASC LIMIT 1;")
     basic_data = cursor.fetchone()
