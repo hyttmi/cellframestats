@@ -9,6 +9,8 @@ import node_utils as nu
 import database_utils as du
 import common as co
 
+MAINTENANCE_MODE = False
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")

@@ -34,10 +34,10 @@ def fetch_all_blocks_hash_and_timestamp():
         return None
 
 def fetch_all_transactions_hash_and_timestamp():
-    cmd_output = sendCommand("ledger tx -all -net Backbone")
+    cmd_output = sendCommand("tx_history -all -net Backbone")
     if cmd_output:
         transactions = []
-        pattern = re.compile(r"\s+Datum_tx_hash: (0x.{64})\s+TS_Created: (.*)")
+        pattern = re.compile(r"hash: (0x.{64}).*?tx_created: ([^\n]+)", re.DOTALL)
         match = pattern.findall(cmd_output)
         if match:
             for hashes, timestamp in match:
@@ -65,10 +65,10 @@ def fetch_cf20_wallets_and_tokens():
         return None
 
 def fetch_all_stake_locks():
-    all_tx_output = sendCommand("ledger tx -all -net Backbone")
+    all_tx_output = sendCommand("tx_history -all -net Backbone")
     stake_lock_info = []
     if all_tx_output:
-        pattern = re.compile(r"Datum_tx_hash: (0x[0-9a-fA-F]+)") # Search all hashes
+        pattern = re.compile(r"hash: (0x[0-9a-fA-F]+)", re.MULTILINE) # Search all hashes
         hashes = pattern.findall(all_tx_output)
         if hashes:
             script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -85,7 +85,7 @@ def fetch_all_stake_locks():
             with mp.Pool() as pool:
                 result_current_locks = pool.map(info_stake_locks, new_hashes)
                 for result in result_current_locks:
-                    if result is not None and "OUT - : 0" not in result[7]:
+                    if result is not None:
                         tx_hash = result[0]
                         ts_created = result[1]
                         value = result[2]
@@ -95,41 +95,36 @@ def fetch_all_stake_locks():
                         sender_addr = result[6]
                         stake_lock_info.append((tx_hash, ts_created, value, srv_uid, reinvest_percent, time_unlock, sender_addr))
                         existing_hashes.add(tx_hash)
-        return stake_lock_info
+            return stake_lock_info
     else:
         return None
 
 def info_stake_locks(hash):
-    cmd_output = sendCommand(f"ledger tx -tx {hash} -net Backbone")
-    pattern = re.compile(r"TS_Created: ([^\n]+)"
-                     r".*?Token_ticker: CELL"
-                     r".*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+\.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+)"
-                     r".*?Sender addr: ([^\n]+)"
-                     r".*?Spent OUTs:(.*)", re.DOTALL)
-    match_stake_lock = pattern.search(cmd_output)
+    cmd_output = sendCommand(f"ledger info -hash {hash} -net Backbone")
+    if "OUT - : 0" not in cmd_output: # Not released stakes only
+        pattern = re.compile(r"TS_Created: ([^\n]+)\s+Token_ticker: CELL.*?type: TX_ITEM_TYPE_OUT_COND\s+data:\s+value: (\d+\.\d+)\s+srv_uid: (\d+)\s+reinvest_percent: (\d+)\s+time_unlock: (\d+).*?Sender addr: (Rj.{102})", re.DOTALL)
+        match_stake_lock = pattern.search(cmd_output)
 
-    if match_stake_lock:
-        ts_created = datetime.strptime(match_stake_lock.group(1), "%a %b %d %H:%M:%S %Y").isoformat()
-        value = float(match_stake_lock.group(2))
-        srv_uid = match_stake_lock.group(3)
-        reinvest_percent = int(match_stake_lock.group(4)) / 10**18
-        time_unlock = datetime.utcfromtimestamp(int(match_stake_lock.group(5))).isoformat()
-        sender_addr = match_stake_lock.group(6)
-        rest_data = match_stake_lock.group(7)
-        
-        stake_info = (
-            hash,
-            ts_created,
-            value,
-            srv_uid,
-            reinvest_percent,
-            time_unlock,
-            sender_addr,
-            rest_data
-        )
-        return stake_info
-    else: # It's not a stake transaction
-        return None
+        if match_stake_lock:
+            ts_created = datetime.strptime(match_stake_lock.group(1), "%a %b %d %H:%M:%S %Y").isoformat()
+            value = float(match_stake_lock.group(2))
+            srv_uid = match_stake_lock.group(3)
+            reinvest_percent = int(match_stake_lock.group(4)) / 10**18
+            time_unlock = datetime.utcfromtimestamp(int(match_stake_lock.group(5))).isoformat()
+            sender_addr = match_stake_lock.group(6)
+
+            stake_info = (
+                hash,
+                ts_created,
+                value,
+                srv_uid,
+                reinvest_percent,
+                time_unlock,
+                sender_addr
+            )
+            return stake_info
+        else: # It's not a stake transaction
+            return None
     
 def test_run():
     functions = [
