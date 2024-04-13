@@ -37,7 +37,7 @@ def fetch_all_transactions_hash_and_timestamp():
     cmd_output = sendCommand("tx_history -all -net Backbone")
     if cmd_output:
         transactions = []
-        pattern = re.compile(r"hash: (0x.{64}).*?tx_created: ([^\n]+)", re.DOTALL)
+        pattern = re.compile(r"status: ACCEPTED\s+hash: (0x.{64}).*?tx_created: ([^\n]+)", re.DOTALL)
         match = pattern.findall(cmd_output)
         if match:
             for hashes, timestamp in match:
@@ -136,3 +136,5 @@ def test_run():
     for function in functions:
         result = function()
         assert result is not None, f"{function.__name__} returned None"
+        
+fetch_all_transactions_hash_and_timestamp()
