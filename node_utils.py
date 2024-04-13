@@ -136,5 +136,3 @@ def test_run():
     for function in functions:
         result = function()
         assert result is not None, f"{function.__name__} returned None"
-        
-fetch_all_transactions_hash_and_timestamp()
