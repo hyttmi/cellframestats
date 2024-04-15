@@ -123,7 +123,7 @@ def info_stake_locks(hash):
                 sender_addr
             )
             return stake_info
-        else: # It's not a stake transaction
+        else: # It's not a stake transaction or hash not found
             return None
     
 def test_run():

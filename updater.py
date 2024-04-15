@@ -68,7 +68,6 @@ def copy_to_main_table(db_name):
     print(f"Update process for {db_name} done!")
     conn.close()
 
-@u.every_x_minutes(30)
 def update_blocks():
     print("Updating blocks database...")
     create_tables("blocks")
@@ -78,7 +77,6 @@ def update_blocks():
         print(f"An error occurred while updating blocks: {e}")
         return
     
-@u.every_x_minutes(30)
 def update_transactions():
     print("Updating transactions database...")
     create_tables("transactions")
@@ -88,7 +86,6 @@ def update_transactions():
         print(f"An error occurred while updating transactions: {e}")
         return
 
-@u.every_x_minutes(30)
 def update_cf20_wallets_info():
     wallets = nu.fetch_cf20_wallets_and_tokens()
     print("Updating wallets database...")
@@ -121,7 +118,6 @@ def update_cf20_wallets_info():
         print("No wallets found.")
     conn.close()
     
-@u.every_x_minutes(30)
 def update_stakes_info():
     print("Updating stakes database...")
     data = nu.fetch_all_stake_locks()
@@ -147,7 +143,6 @@ def update_stakes_info():
     else:
         print("Stakes not updated as there was no new data to process!") # There's no data if there's no new stakes.
 
-@u.every_new_day
 def update_cf20_wallets_daily():
     wallets = nu.fetch_cf20_wallets_and_tokens()
     print("Updating wallets daily amount...")
@@ -170,8 +165,7 @@ def update_cf20_wallets_daily():
     else:
         print("No wallets found.")
     conn.close()
-    
-@u.every_x_minutes(30)
+
 def fetch_latest_database_from_cellframestats(filename):
     print("Updating cellframe.db...")
     url = f"http://cellframestats.com/{filename}"
@@ -186,23 +180,25 @@ def fetch_latest_database_from_cellframestats(filename):
         print(f"Failed to download {filename}!")
 
 if __name__ == "__main__":
-    tx_thread = threading.Thread(target=update_transactions)
-    blocks_thread = threading.Thread(target=update_blocks)
-    wallets_thread = threading.Thread(target=update_cf20_wallets_info)
-    stakes_thread = threading.Thread(target=update_stakes_info)
-    cellframedb_thread = threading.Thread(target=fetch_latest_database_from_cellframestats, args=("cellframe.db",))
-    wallets_daily_thread = threading.Thread(target=update_cf20_wallets_daily)
     
-    tx_thread.start()
-    blocks_thread.start()
-    wallets_thread.start()
-    stakes_thread.start()
-    cellframedb_thread.start()
-    wallets_daily_thread.start()
-    
-    tx_thread.join()
-    blocks_thread.join()
-    wallets_thread.join()
-    stakes_thread.join()
-    cellframedb_thread.join()
-    wallets_daily_thread.join()
+    while True:
+        blocks_thread = threading.Thread(target=update_blocks)
+        wallets_thread = threading.Thread(target=update_cf20_wallets_info)
+        stakes_thread = threading.Thread(target=update_stakes_info)
+        cellframedb_thread = threading.Thread(target=fetch_latest_database_from_cellframestats, args=("cellframe.db",))
+        wallets_daily_thread = threading.Thread(target=update_cf20_wallets_daily)
+
+        blocks_thread.start()
+        blocks_thread.join()
+        
+        wallets_thread.start()
+        wallets_thread.join()
+        
+        stakes_thread.start()
+        stakes_thread.join()
+        
+        cellframedb_thread.start()
+        cellframedb_thread.join()
+        
+        wallets_daily_thread.start()
+        wallets_daily_thread.join()
