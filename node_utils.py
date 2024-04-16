@@ -68,7 +68,7 @@ def fetch_all_stake_locks():
     all_tx_output = sendCommand("tx_history -all -net Backbone")
     stake_lock_info = []
     if all_tx_output:
-        pattern = re.compile(r"hash: (0x[0-9a-fA-F]+)", re.MULTILINE) # Search all hashes
+        pattern = re.compile(r"\s+hash: (0x[0-9a-fA-F]+)") # Search all hashes
         hashes = pattern.findall(all_tx_output)
         if hashes:
             script_dir = os.path.dirname(os.path.abspath(__file__))
