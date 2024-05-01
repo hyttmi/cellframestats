@@ -189,21 +189,17 @@ def execute_thread(thread):
         pass
 
 if __name__ == "__main__":
-    try:
-        while True:
-            blocks_thread = threading.Thread(target=update_blocks)
-            transactions_thread = threading.Thread(target=update_transactions)
-            wallets_thread = threading.Thread(target=update_cf20_wallets_info)
-            stakes_thread = threading.Thread(target=update_stakes_info)
-            cellframedb_thread = threading.Thread(target=fetch_latest_database_from_cellframestats, args=("cellframe.db",))
-            wallets_daily_thread = threading.Thread(target=update_cf20_wallets_daily)
-
-            execute_thread(blocks_thread)
-            execute_thread(transactions_thread)
-            execute_thread(wallets_thread)
-            execute_thread(stakes_thread)
-            execute_thread(cellframedb_thread)
-            execute_thread(wallets_daily_thread)
-
-    except KeyboardInterrupt:
-        exit(1)
+    
+    while True:
+        blocks_thread = threading.Thread(target=update_blocks)
+        transactions_thread = threading.Thread(target=update_transactions)
+        wallets_thread = threading.Thread(target=update_cf20_wallets_info)
+        stakes_thread = threading.Thread(target=update_stakes_info)
+        cellframedb_thread = threading.Thread(target=fetch_latest_database_from_cellframestats, args=("cellframe.db",))
+        wallets_daily_thread = threading.Thread(target=update_cf20_wallets_daily)
+        execute_thread(blocks_thread)
+        execute_thread(transactions_thread)
+        execute_thread(wallets_thread)
+        execute_thread(stakes_thread)
+        execute_thread(cellframedb_thread)
+        execute_thread(wallets_daily_thread)
