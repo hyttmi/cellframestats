@@ -190,8 +190,7 @@ def execute_thread(thread):
 
 if __name__ == "__main__":
     try:
-        running = True
-        while running:
+        while True:
             blocks_thread = threading.Thread(target=update_blocks)
             transactions_thread = threading.Thread(target=update_transactions)
             wallets_thread = threading.Thread(target=update_cf20_wallets_info)
@@ -207,5 +206,4 @@ if __name__ == "__main__":
             execute_thread(wallets_daily_thread)
 
     except KeyboardInterrupt:
-        print("Exiting...")
-        running = False
+        exit(1)
