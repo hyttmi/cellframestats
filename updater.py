@@ -178,9 +178,15 @@ def fetch_latest_database_from_cellframestats(filename):
         print(f"{filename} updated succesfully!")
     else:
         print(f"Failed to download {filename}!")
+        
+def execute_thread(thread):
+    try:
+        thread.start()
+        thread.join()
+    except:
+        pass
 
 if __name__ == "__main__":
-    
     while True:
         blocks_thread = threading.Thread(target=update_blocks)
         transactions_thread = threading.Thread(target=update_transactions)
@@ -189,20 +195,9 @@ if __name__ == "__main__":
         cellframedb_thread = threading.Thread(target=fetch_latest_database_from_cellframestats, args=("cellframe.db",))
         wallets_daily_thread = threading.Thread(target=update_cf20_wallets_daily)
 
-        blocks_thread.start()
-        blocks_thread.join()
-        
-        transactions_thread.start()
-        transactions_thread.join()
-        
-        wallets_thread.start()
-        wallets_thread.join()
-        
-        stakes_thread.start()
-        stakes_thread.join()
-        
-        cellframedb_thread.start()
-        cellframedb_thread.join()
-        
-        wallets_daily_thread.start()
-        wallets_daily_thread.join()
+        execute_thread(blocks_thread)
+        execute_thread(transactions_thread)
+        execute_thread(wallets_thread)
+        execute_thread(stakes_thread)
+        execute_thread(cellframedb_thread)
+        execute_thread(wallets_daily_thread)
