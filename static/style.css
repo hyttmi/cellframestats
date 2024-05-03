@@ -1,0 +1,249 @@
+:root {
+    --primary-color: #11b6c4;
+    --hover-color: #119eaa;
+    --secondary-color: #0c0c0c;
+    --chart-color: #11b6c4;
+}
+
+body,
+html {
+    font-family: "Poppins", sans-serif;
+    background-image: url("img/bg.svg");
+    background-size: cover;
+    background-attachment: fixed;
+    height: 100%;
+}
+
+.logo {
+    max-width: 500px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.counter {
+    font-weight: bold;
+}
+
+.navbar {
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 60px;
+    background-color: var(--primary-color);
+    text-transform: uppercase;
+}
+
+.nav-link {
+    color: #131313;
+    background-color: var(--primary-color);
+    height: 60px;
+    padding-top: 18px;
+}
+
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link.show {
+    color: #131313;
+    background-color: var(--hover-color);
+}
+
+.nav-link:hover {
+    color: #131313;
+    background-color: var(--hover-color);
+}
+
+.nav-item {
+    margin-left: 10px;
+}
+
+.navbar {
+    --bs-navbar-toggler-border-color: none;
+    --bs-navbar-toggler-border: none;
+    --bs-navbar-toggler-border-radius: 0;
+    --bs-navbar-toggler-focus-width: 0;
+    --bs-navbar-toggler-transition: none;
+    --bs-navbar-toggler-border-color: rgba(0, 0, 0, 0.1);
+}
+
+.navbar-dark {
+    --bs-navbar-toggler-border-color: none;
+}
+
+.main-content {
+    margin-top: 30px;
+    background-color: var(--secondary-color);
+}
+
+.row-stats-heading {
+    margin-top: 12px;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.stats {
+    color: var(--primary-color);
+    font-weight: bold;
+    padding-top: 20px;
+}
+
+.info {
+    padding: 20px;
+}
+
+footer {
+    margin-top: 50px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+.navbar-nav .nav-link:focus {
+    color: var(--secondary-color);
+}
+
+.footer-heading {
+    padding: 6px;
+}
+
+.footer-link-text {
+    padding-left: 6px;
+}
+
+.row-stats {
+    margin-top: 20px;
+}
+
+.text-color-1 {
+    color: var(--primary-color);
+}
+
+.link {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.link:hover, .modal-title {
+    color: var(--hover-color)
+}
+
+.alert_red {
+    background-color: rgba(255, 0, 0, 0.35);
+}
+
+.alert_yellow {
+    background-color: rgba(255, 251, 3, 0.35);
+}
+
+.alert_green {
+    background-color: rgba(0, 163, 41, 0.35);
+}
+
+.alert {
+    padding: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.alert p {
+    color: white;
+}
+
+#map {
+    padding-top: 20px;
+    width: 80%;
+    height: 80%;
+}
+
+.heading-small {
+    text-transform: uppercase;
+    color: var(--primary-color);
+}
+
+.table {
+    background-color: transparent;
+    font-size: 0.8rem;
+}
+
+.table th,
+.table td {
+    background-color: transparent;
+}
+
+.wallet-input {
+    background: var(--primary-color);
+    margin-top: 40px;
+    border-radius: 10px;
+    color: #FFFFFF;
+    width: 90%;
+}
+
+.wallet {
+    background: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 80%;
+    margin-top: 5px;
+}
+
+.wallet:focus {
+    background: #FFFFFF;
+    border: none;
+    box-shadow: none;
+    color: #131313
+}
+
+.btn-custom {
+    background: var(--primary-color);
+    border: none;
+    padding: 11px;
+    border-radius: 8px;
+    margin-left: 5px;
+}
+
+.btn-custom:hover, .btn-custom:active {
+    background: var(--hover-color);
+    border: none;
+}
+
+.result {
+    margin-top: 15px;
+    min-height: 30px;
+}
+
+.navbar-collapse {
+    z-index: 1;
+}
+
+.table {
+    --bs-table-hover-bg: var(--primary-color);
+    --bs-table-hover-color: var(--secondary-color);
+}
+
+.node-link {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.node-link:hover {
+    text-decoration: underline;
+}
+
+.modal-content {
+    background-color: #131313 !important;
+    border: none;
+}
+
+.tooltip-custom {
+    --bs-tooltip-bg: var(--primary-color);
+    --bs-tooltip-color: var(--secondary-color);
+  }
+
+svg {
+    fill: var(--primary-color);
+}
+
+
+.error-big {
+    font-size: 10rem;
+}
